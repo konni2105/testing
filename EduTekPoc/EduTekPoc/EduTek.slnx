@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="EduTek.API/EduTek.API.csproj" />
+  <Project Path="EduTek.Application/EduTek.Application.csproj" />
+  <Project Path="EduTek.Infrastructure/EduTek.Infrastructure.csproj" />
+  <Project Path="EduTek.Web/EduTek.Web.csproj" />
+</Solution>
