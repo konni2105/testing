@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EduTek.API.Controllers
 {
-    [Authorize]
+    [Authorize(Roles = "Admin,Teacher")] //only admin can access controller
     [Route("api/[controller]")]
     [ApiController]
     public class StudentController : ControllerBase

@@ -15,5 +15,9 @@ namespace EduTek.Infrastructure.Models
         public string PhoneNumber { get; set; } = string.Empty;
 
         public DateTime DateOfBirth { get; set; }
+
+        public int ClassId { get; set; } //foreignkey
+
+        public Class Class { get; set; } = null!;
     }
 }

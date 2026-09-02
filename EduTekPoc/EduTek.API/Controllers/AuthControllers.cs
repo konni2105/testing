@@ -10,31 +10,43 @@ namespace EduTek.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
+        // Temporary users for POC/testing
+        private static readonly List<(string Username, string Password, string Role)> Users =
+            new()
+            {
+                ("admin", "1234", "Admin"),
+                ("teacher1", "1234", "Teacher"),
+                ("student1", "1234", "Student"),
+                ("parent1", "1234", "Parent")
+            };
+
         [HttpPost("login")]
         public IActionResult Login(string username, string password)
         {
-            // Simple credential validation
-            if (username != "admin" || password != "1234")
+            var user = Users.FirstOrDefault(u =>
+                u.Username == username &&
+                u.Password == password);
+
+            if (user == default)
             {
                 return Unauthorized("Invalid username or password");
             }
 
             // Claims = information stored inside JWT
             var claims = new[]
-                {
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim(ClaimTypes.Role, "Admin")
-                };
+            {
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Role, user.Role)
+            };
 
-            // Same secret key we configured in Program.cs
             var key = new SymmetricSecurityKey(
-    Encoding.UTF8.GetBytes("EduTekSuperSecretKey1234567890ABC"));
+                Encoding.UTF8.GetBytes(
+                    "EduTekSuperSecretKey1234567890ABC"));
 
             var credentials = new SigningCredentials(
                 key,
                 SecurityAlgorithms.HmacSha256);
 
-            // Create JWT
             var token = new JwtSecurityToken(
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(30),

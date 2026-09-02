@@ -1,10 +1,12 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
 using EduTek.Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EduTek.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class TeacherController : ControllerBase

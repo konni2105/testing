@@ -13,5 +13,8 @@
         public string PhoneNumber { get; set; } = string.Empty;
 
         public string Subject { get; set; } = string.Empty;
+
+        public ICollection<TeacherSubjectClass> TeacherSubjectClasses { get; set; }
+        = new List<TeacherSubjectClass>();
     }
 }

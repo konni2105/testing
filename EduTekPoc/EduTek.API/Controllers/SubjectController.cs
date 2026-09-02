@@ -1,10 +1,12 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
 using EduTek.Infrastructure.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EduTek.API.Controllers
 {
+   
     [Route("api/[controller]")]
     [ApiController]
     public class SubjectController : ControllerBase
@@ -17,6 +19,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Subject
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -33,6 +36,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Subject/5
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -57,6 +61,7 @@ namespace EduTek.API.Controllers
         }
 
         // POST: api/Subject
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateSubjectDto dto)
         {
@@ -89,6 +94,7 @@ namespace EduTek.API.Controllers
         }
 
         // PUT: api/Subject/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -124,6 +130,7 @@ namespace EduTek.API.Controllers
         }
 
         // DELETE: api/Subject/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
