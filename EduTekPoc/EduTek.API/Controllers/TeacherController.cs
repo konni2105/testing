@@ -31,7 +31,7 @@ namespace EduTek.API.Controllers
                 LastName = t.LastName,
                 Email = t.Email,
                 PhoneNumber = t.PhoneNumber,
-                Subject = t.Subject
+                
             });
 
             return Ok(response);
@@ -58,7 +58,7 @@ namespace EduTek.API.Controllers
                 LastName = teacher.LastName,
                 Email = teacher.Email,
                 PhoneNumber = teacher.PhoneNumber,
-                Subject = teacher.Subject
+               
             };
 
             return Ok(response);
@@ -80,7 +80,7 @@ namespace EduTek.API.Controllers
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
-                Subject = dto.Subject
+             
             };
 
             var createdTeacher = await _teacherService.AddAsync(teacher);
@@ -93,7 +93,7 @@ namespace EduTek.API.Controllers
                 LastName = createdTeacher.LastName,
                 Email = createdTeacher.Email,
                 PhoneNumber = createdTeacher.PhoneNumber,
-                Subject = createdTeacher.Subject
+              
             };
 
             return CreatedAtAction(
@@ -121,7 +121,7 @@ namespace EduTek.API.Controllers
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
-                Subject = dto.Subject
+               
             };
 
             var updated = await _teacherService.UpdateAsync(id, teacher);

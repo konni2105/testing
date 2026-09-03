@@ -16,8 +16,18 @@ namespace EduTek.Infrastructure.Models
 
         public DateTime DateOfBirth { get; set; }
 
-        public int ClassId { get; set; } //foreignkey
+        public int ClassId { get; set; }//foreignkey
 
         public Class Class { get; set; } = null!;
+
+        public ICollection<Attendance> Attendances { get; set; }
+            = new List<Attendance>();
+
+        public ICollection<Mark> Marks { get; set; }
+            = new List<Mark>();
+
+        public ICollection<Feedback> Feedbacks { get; set; }
+             = new List<Feedback>();
+
     }
 }

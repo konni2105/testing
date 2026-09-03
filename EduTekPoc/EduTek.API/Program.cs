@@ -64,6 +64,27 @@ builder.Services.AddScoped<ISubjectService, SubjectService>();
 builder.Services.AddScoped<IDepartmentRepository, DepartmentRepository>();
 builder.Services.AddScoped<IDepartmentService, DepartmentService>();
 
+builder.Services.AddScoped<IClassRepository, ClassRepository>();
+builder.Services.AddScoped<IClassService, ClassService>();
+
+builder.Services.AddScoped<IClassSubjectRepository, ClassSubjectRepository>();
+builder.Services.AddScoped<IClassSubjectService, ClassSubjectService>();
+
+builder.Services.AddScoped<ITeacherSubjectClassRepository,TeacherSubjectClassRepository>();
+builder.Services.AddScoped<ITeacherSubjectClassService,TeacherSubjectClassService>();
+
+
+builder.Services.AddScoped<IAttendanceRepository, AttendanceRepository>();
+builder.Services.AddScoped<IAttendanceService, AttendanceService>();
+
+builder.Services.AddScoped<IExamRepository, ExamRepository>();
+builder.Services.AddScoped<IExamService, ExamService>();
+
+builder.Services.AddScoped<IMarkRepository, MarkRepository>();
+builder.Services.AddScoped<IMarkService, MarkService>();
+
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
 
 var app = builder.Build();
 

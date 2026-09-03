@@ -13,10 +13,17 @@
         public Department Department { get; set; } = null!;
 
         public ICollection<ClassSubject> ClassSubjects { get; set; }
-    = new List<ClassSubject>();
+            = new List<ClassSubject>();
 
         public ICollection<TeacherSubjectClass> TeacherSubjectClasses { get; set; }
             = new List<TeacherSubjectClass>();
+
+        public ICollection<Attendance> Attendances { get; set; }
+            = new List<Attendance>();
+
+        public ICollection<Exam> Exams { get; set; }
+            = new List<Exam>();
+
     }
 }
  

@@ -17,5 +17,8 @@
 
         public ICollection<TeacherSubjectClass> TeacherSubjectClasses { get; set; }
             = new List<TeacherSubjectClass>();
+
+        public ICollection<Exam> Exams { get; set; }
+            = new List<Exam>();
     }
 }

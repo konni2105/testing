@@ -47,7 +47,7 @@ namespace EduTek.Infrastructure.Repositories
             existingTeacher.LastName = teacher.LastName;
             existingTeacher.Email = teacher.Email;
             existingTeacher.PhoneNumber = teacher.PhoneNumber;
-            existingTeacher.Subject = teacher.Subject;
+        
 
             await _context.SaveChangesAsync();
 

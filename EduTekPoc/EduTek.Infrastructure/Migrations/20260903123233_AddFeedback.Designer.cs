@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduTek.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260902132014_AddAcademicRelationships")]
-    partial class AddAcademicRelationships
+    [Migration("20260903123233_AddFeedback")]
+    partial class AddFeedback
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,35 @@ namespace EduTek.Infrastructure.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Attendance", b =>
+                {
+                    b.Property<int>("AttendanceId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AttendanceId"));
+
+                    b.Property<DateTime>("AttendanceDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsPresent")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AttendanceId");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("Attendances");
+                });
 
             modelBuilder.Entity("EduTek.Infrastructure.Models.Class", b =>
                 {
@@ -80,6 +109,93 @@ namespace EduTek.Infrastructure.Migrations
                     b.HasKey("DepartmentId");
 
                     b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Exam", b =>
+                {
+                    b.Property<int>("ExamId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ExamId"));
+
+                    b.Property<int>("ClassId")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("ExamDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("ExamName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("SubjectId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ExamId");
+
+                    b.HasIndex("ClassId");
+
+                    b.HasIndex("SubjectId");
+
+                    b.ToTable("Exams");
+                });
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Feedback", b =>
+                {
+                    b.Property<int>("FeedbackId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackId"));
+
+                    b.Property<string>("Comments")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("FeedbackDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("TeacherId")
+                        .HasColumnType("int");
+
+                    b.HasKey("FeedbackId");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("TeacherId");
+
+                    b.ToTable("Feedbacks");
+                });
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Mark", b =>
+                {
+                    b.Property<int>("MarkId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MarkId"));
+
+                    b.Property<int>("ExamId")
+                        .HasColumnType("int");
+
+                    b.Property<decimal>("Score")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<int>("StudentId")
+                        .HasColumnType("int");
+
+                    b.HasKey("MarkId");
+
+                    b.HasIndex("StudentId");
+
+                    b.HasIndex("ExamId", "StudentId")
+                        .IsUnique();
+
+                    b.ToTable("Marks");
                 });
 
             modelBuilder.Entity("EduTek.Infrastructure.Models.Student", b =>
@@ -169,10 +285,6 @@ namespace EduTek.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("Subject")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("TeacherId");
 
                     b.ToTable("Teachers");
@@ -198,6 +310,25 @@ namespace EduTek.Infrastructure.Migrations
                     b.ToTable("TeacherSubjectClasses");
                 });
 
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Attendance", b =>
+                {
+                    b.HasOne("EduTek.Infrastructure.Models.Student", "Student")
+                        .WithMany("Attendances")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduTek.Infrastructure.Models.Subject", "Subject")
+                        .WithMany("Attendances")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Subject");
+                });
+
             modelBuilder.Entity("EduTek.Infrastructure.Models.ClassSubject", b =>
                 {
                     b.HasOne("EduTek.Infrastructure.Models.Class", "Class")
@@ -215,6 +346,63 @@ namespace EduTek.Infrastructure.Migrations
                     b.Navigation("Class");
 
                     b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Exam", b =>
+                {
+                    b.HasOne("EduTek.Infrastructure.Models.Class", "Class")
+                        .WithMany("Exams")
+                        .HasForeignKey("ClassId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduTek.Infrastructure.Models.Subject", "Subject")
+                        .WithMany("Exams")
+                        .HasForeignKey("SubjectId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Class");
+
+                    b.Navigation("Subject");
+                });
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Feedback", b =>
+                {
+                    b.HasOne("EduTek.Infrastructure.Models.Student", "Student")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduTek.Infrastructure.Models.Teacher", "Teacher")
+                        .WithMany("Feedbacks")
+                        .HasForeignKey("TeacherId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Student");
+
+                    b.Navigation("Teacher");
+                });
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Mark", b =>
+                {
+                    b.HasOne("EduTek.Infrastructure.Models.Exam", "Exam")
+                        .WithMany("Marks")
+                        .HasForeignKey("ExamId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("EduTek.Infrastructure.Models.Student", "Student")
+                        .WithMany("Marks")
+                        .HasForeignKey("StudentId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Exam");
+
+                    b.Navigation("Student");
                 });
 
             modelBuilder.Entity("EduTek.Infrastructure.Models.Student", b =>
@@ -270,6 +458,8 @@ namespace EduTek.Infrastructure.Migrations
                 {
                     b.Navigation("ClassSubjects");
 
+                    b.Navigation("Exams");
+
                     b.Navigation("Students");
 
                     b.Navigation("TeacherSubjectClasses");
@@ -280,15 +470,35 @@ namespace EduTek.Infrastructure.Migrations
                     b.Navigation("Subjects");
                 });
 
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Exam", b =>
+                {
+                    b.Navigation("Marks");
+                });
+
+            modelBuilder.Entity("EduTek.Infrastructure.Models.Student", b =>
+                {
+                    b.Navigation("Attendances");
+
+                    b.Navigation("Feedbacks");
+
+                    b.Navigation("Marks");
+                });
+
             modelBuilder.Entity("EduTek.Infrastructure.Models.Subject", b =>
                 {
+                    b.Navigation("Attendances");
+
                     b.Navigation("ClassSubjects");
+
+                    b.Navigation("Exams");
 
                     b.Navigation("TeacherSubjectClasses");
                 });
 
             modelBuilder.Entity("EduTek.Infrastructure.Models.Teacher", b =>
                 {
+                    b.Navigation("Feedbacks");
+
                     b.Navigation("TeacherSubjectClasses");
                 });
 #pragma warning restore 612, 618

@@ -10,19 +10,21 @@ namespace EduTek.Infrastructure.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropColumn(
+                name: "Subject",
+                table: "Teachers");
+            
             migrationBuilder.AddColumn<int>(
                 name: "DepartmentId",
                 table: "Subjects",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.AddColumn<int>(
                 name: "ClassId",
                 table: "Students",
                 type: "int",
-                nullable: false,
-                defaultValue: 0);
+                nullable: true);
 
             migrationBuilder.CreateTable(
                 name: "Classes",
@@ -170,6 +172,13 @@ namespace EduTek.Infrastructure.Migrations
             migrationBuilder.DropColumn(
                 name: "ClassId",
                 table: "Students");
+
+            migrationBuilder.AddColumn<string>(
+                name: "Subject",
+                table: "Teachers",
+                type: "nvarchar(max)",
+                nullable: false,
+                defaultValue: "");
         }
     }
 }

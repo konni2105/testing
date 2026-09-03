@@ -4,6 +4,7 @@ using EduTek.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace EduTek.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260903115459_AddExam")]
+    partial class AddExam
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -136,63 +139,6 @@ namespace EduTek.Infrastructure.Migrations
                     b.HasIndex("SubjectId");
 
                     b.ToTable("Exams");
-                });
-
-            modelBuilder.Entity("EduTek.Infrastructure.Models.Feedback", b =>
-                {
-                    b.Property<int>("FeedbackId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FeedbackId"));
-
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("FeedbackDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TeacherId")
-                        .HasColumnType("int");
-
-                    b.HasKey("FeedbackId");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("TeacherId");
-
-                    b.ToTable("Feedbacks");
-                });
-
-            modelBuilder.Entity("EduTek.Infrastructure.Models.Mark", b =>
-                {
-                    b.Property<int>("MarkId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("MarkId"));
-
-                    b.Property<int>("ExamId")
-                        .HasColumnType("int");
-
-                    b.Property<decimal>("Score")
-                        .HasColumnType("decimal(18,2)");
-
-                    b.Property<int>("StudentId")
-                        .HasColumnType("int");
-
-                    b.HasKey("MarkId");
-
-                    b.HasIndex("StudentId");
-
-                    b.HasIndex("ExamId", "StudentId")
-                        .IsUnique();
-
-                    b.ToTable("Marks");
                 });
 
             modelBuilder.Entity("EduTek.Infrastructure.Models.Student", b =>
@@ -364,44 +310,6 @@ namespace EduTek.Infrastructure.Migrations
                     b.Navigation("Subject");
                 });
 
-            modelBuilder.Entity("EduTek.Infrastructure.Models.Feedback", b =>
-                {
-                    b.HasOne("EduTek.Infrastructure.Models.Student", "Student")
-                        .WithMany("Feedbacks")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EduTek.Infrastructure.Models.Teacher", "Teacher")
-                        .WithMany("Feedbacks")
-                        .HasForeignKey("TeacherId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Student");
-
-                    b.Navigation("Teacher");
-                });
-
-            modelBuilder.Entity("EduTek.Infrastructure.Models.Mark", b =>
-                {
-                    b.HasOne("EduTek.Infrastructure.Models.Exam", "Exam")
-                        .WithMany("Marks")
-                        .HasForeignKey("ExamId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.HasOne("EduTek.Infrastructure.Models.Student", "Student")
-                        .WithMany("Marks")
-                        .HasForeignKey("StudentId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Exam");
-
-                    b.Navigation("Student");
-                });
-
             modelBuilder.Entity("EduTek.Infrastructure.Models.Student", b =>
                 {
                     b.HasOne("EduTek.Infrastructure.Models.Class", "Class")
@@ -467,18 +375,9 @@ namespace EduTek.Infrastructure.Migrations
                     b.Navigation("Subjects");
                 });
 
-            modelBuilder.Entity("EduTek.Infrastructure.Models.Exam", b =>
-                {
-                    b.Navigation("Marks");
-                });
-
             modelBuilder.Entity("EduTek.Infrastructure.Models.Student", b =>
                 {
                     b.Navigation("Attendances");
-
-                    b.Navigation("Feedbacks");
-
-                    b.Navigation("Marks");
                 });
 
             modelBuilder.Entity("EduTek.Infrastructure.Models.Subject", b =>
@@ -494,8 +393,6 @@ namespace EduTek.Infrastructure.Migrations
 
             modelBuilder.Entity("EduTek.Infrastructure.Models.Teacher", b =>
                 {
-                    b.Navigation("Feedbacks");
-
                     b.Navigation("TeacherSubjectClasses");
                 });
 #pragma warning restore 612, 618
