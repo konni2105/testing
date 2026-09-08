@@ -5,7 +5,7 @@
         public int MarkId { get; set; }
 
         public int ExamId { get; set; }
-        public Exam Exam { get; set; } = null!;
+        public Exam Exam { get; set; } = null!; //navigation property
 
         public int StudentId { get; set; }
         public Student Student { get; set; } = null!;

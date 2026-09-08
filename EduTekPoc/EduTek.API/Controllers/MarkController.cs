@@ -77,16 +77,6 @@ namespace EduTek.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var exists = await _markService.ExistsAsync(
-                dto.ExamId,
-                dto.StudentId);
-
-            if (exists)
-            {
-                return Conflict(
-                    "Marks already exist for this student and exam.");
-            }
-
             var mark = new Mark
             {
                 ExamId = dto.ExamId,

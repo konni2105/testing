@@ -8,9 +8,12 @@ namespace EduTek.Infrastructure.Repositories
 
         Task<Attendance?> GetByIdAsync(int id);
 
-        Task<Attendance> AddAsync(Attendance attendance);
+        Task<Attendance> AddAsync(
+            Attendance attendance);
 
-        Task<bool> UpdateAsync(int id, Attendance attendance);
+        Task<bool> UpdateAsync(
+            int id,
+            Attendance attendance);
 
         Task<bool> DeleteAsync(int id);
 
@@ -22,5 +25,10 @@ namespace EduTek.Infrastructure.Repositories
         Task<bool> IsStudentInClassAsync(
             int studentId,
             int classId);
+
+        Task<bool> ExistsAsync(
+            int studentId,
+            int subjectId,
+            DateTime attendanceDate);
     }
 }

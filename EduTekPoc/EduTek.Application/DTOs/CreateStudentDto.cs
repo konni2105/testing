@@ -22,5 +22,8 @@ namespace EduTek.Application.DTOs
 
         [Required(ErrorMessage = "Date of birth is required.")]
         public DateTime DateOfBirth { get; set; }
+
+        [Required(ErrorMessage = "Class is required.")]
+        public int ClassId { get; set; }
     }
 }

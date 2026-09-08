@@ -13,5 +13,10 @@ namespace EduTek.Infrastructure.Repositories
         Task<bool> UpdateAsync(int id, Exam exam);
 
         Task<bool> DeleteAsync(int id);
+
+        Task<bool> ExistsAsync(
+            int subjectId,
+            int classId,
+            DateTime examDate);
     }
 }

@@ -1,5 +1,6 @@
 ﻿namespace EduTek.API.Middleware
 {
+    //custom middleware
     public class RequestLoggingMiddleware
     {
         //DI

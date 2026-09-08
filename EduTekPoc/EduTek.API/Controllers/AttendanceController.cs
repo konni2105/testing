@@ -1,6 +1,5 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
-using EduTek.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,38 +11,28 @@ namespace EduTek.API.Controllers
     {
         private readonly IAttendanceService _attendanceService;
 
-        public AttendanceController(IAttendanceService attendanceService)
+        public AttendanceController(
+            IAttendanceService attendanceService)
         {
             _attendanceService = attendanceService;
         }
 
-        // GET: api/Attendance
         [Authorize(Roles = "Admin,Teacher")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var attendanceRecords = await _attendanceService.GetAllAsync();
+            var attendanceRecords =
+                await _attendanceService.GetAllAsync();
 
-            var response = attendanceRecords.Select(a => new AttendanceDto
-            {
-                AttendanceId = a.AttendanceId,
-                StudentId = a.StudentId,
-                StudentName = $"{a.Student.FirstName} {a.Student.LastName}",
-                SubjectId = a.SubjectId,
-                SubjectName = a.Subject.SubjectName,
-                AttendanceDate = a.AttendanceDate,
-                IsPresent = a.IsPresent
-            }).ToList();
-
-            return Ok(response);
+            return Ok(attendanceRecords);
         }
 
-        // GET: api/Attendance/1
         [Authorize(Roles = "Admin,Teacher")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var attendance = await _attendanceService.GetByIdAsync(id);
+            var attendance =
+                await _attendanceService.GetByIdAsync(id);
 
             if (attendance == null)
             {
@@ -53,90 +42,28 @@ namespace EduTek.API.Controllers
                 });
             }
 
-            var response = new AttendanceDto
-            {
-                AttendanceId = attendance.AttendanceId,
-                StudentId = attendance.StudentId,
-                StudentName =
-                    $"{attendance.Student.FirstName} {attendance.Student.LastName}",
-                SubjectId = attendance.SubjectId,
-                SubjectName = attendance.Subject.SubjectName,
-                AttendanceDate = attendance.AttendanceDate,
-                IsPresent = attendance.IsPresent
-            };
-
-            return Ok(response);
+            return Ok(attendance);
         }
 
         [Authorize(Roles = "Admin,Teacher")]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateAttendanceDto dto)
+        public async Task<IActionResult> Create(
+            CreateAttendanceDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var created =
+                await _attendanceService.AddAsync(dto);
 
-            var teacherAssigned =
-                await _attendanceService.IsTeacherAssignedAsync(
-                    dto.TeacherId,
-                    dto.SubjectId,
-                    dto.ClassId);
-
-            if (!teacherAssigned)
-            {
-                return Forbid();
-            }
-
-            var studentInClass =
-                await _attendanceService.IsStudentInClassAsync(
-                    dto.StudentId,
-                    dto.ClassId);
-
-            if (!studentInClass)
-            {
-                return BadRequest(
-                    "Student does not belong to the selected class.");
-            }
-
-            var attendance = new Attendance
-            {
-                StudentId = dto.StudentId,
-                SubjectId = dto.SubjectId,
-                AttendanceDate = dto.AttendanceDate,
-                IsPresent = dto.IsPresent
-            };
-
-            var createdAttendance =
-                await _attendanceService.AddAsync(attendance);
-
-            return Ok(new
-            {
-                message = "Attendance created successfully.",
-                attendanceId = createdAttendance.AttendanceId
-            });
+            return Ok(created);
         }
 
-        // PUT: api/Attendance/1
         [Authorize(Roles = "Admin,Teacher")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
             UpdateAttendanceDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var attendance = new Attendance
-            {
-                AttendanceDate = dto.AttendanceDate,
-                IsPresent = dto.IsPresent
-            };
-
             var updated =
-                await _attendanceService.UpdateAsync(id, attendance);
+                await _attendanceService.UpdateAsync(id, dto);
 
             if (!updated)
             {
@@ -152,7 +79,6 @@ namespace EduTek.API.Controllers
             });
         }
 
-        // DELETE: api/Attendance/1
         [Authorize(Roles = "Admin,Teacher")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)

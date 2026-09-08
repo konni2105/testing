@@ -70,5 +70,16 @@ namespace EduTek.Infrastructure.Repositories
 
             return true;
         }
+        public async Task<bool> ExistsAsync(
+            int teacherId,
+            int subjectId,
+            int classId)
+        {
+            return await _context.TeacherSubjectClasses.AnyAsync(x =>
+                x.TeacherId == teacherId &&
+                x.SubjectId == subjectId &&
+                x.ClassId == classId);
+        }
+
     }
 }

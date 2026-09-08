@@ -7,14 +7,17 @@ namespace EduTek.Application.Services
     public class StudentService : IStudentService
     {
         private readonly IStudentRepository _repository;
+        private readonly IClassRepository _classRepository;
 
-        public StudentService(IStudentRepository repository)
+        public StudentService(
+            IStudentRepository repository,
+            IClassRepository classRepository)
         {
             _repository = repository;
+            _classRepository = classRepository;
         }
 
-
-        //entity to dto
+        // GET ALL
         public async Task<List<StudentDto>> GetAllAsync()
         {
             var students = await _repository.GetAllAsync();
@@ -26,10 +29,12 @@ namespace EduTek.Application.Services
                 LastName = s.LastName,
                 Email = s.Email,
                 PhoneNumber = s.PhoneNumber,
-                DateOfBirth = s.DateOfBirth
+                DateOfBirth = s.DateOfBirth,
+                ClassId = s.ClassId
             }).ToList();
         }
 
+        // GET BY ID
         public async Task<StudentDto?> GetByIdAsync(int id)
         {
             var student = await _repository.GetByIdAsync(id);
@@ -44,25 +49,45 @@ namespace EduTek.Application.Services
                 LastName = student.LastName,
                 Email = student.Email,
                 PhoneNumber = student.PhoneNumber,
-                DateOfBirth = student.DateOfBirth
+                DateOfBirth = student.DateOfBirth,
+                ClassId = student.ClassId
             };
         }
 
-
-        //post -> dto to entity
-        public async Task<StudentDto> CreateAsync(CreateStudentDto dto)
+        // CREATE
+        public async Task<StudentDto> CreateAsync(
+            CreateStudentDto dto)
         {
+            // Check whether class exists
+            var classEntity =
+                await _classRepository.GetByIdAsync(dto.ClassId);
+
+            if (classEntity == null)
+                throw new Exception("Class not found.");
+
+            // Check duplicate email
+            var emailExists =
+                await _repository.EmailExistsAsync(dto.Email);
+
+            if (emailExists)
+                throw new Exception("Email already exists.");
+
+            // DTO → Entity
             var student = new Student
             {
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
-                DateOfBirth = dto.DateOfBirth
+                DateOfBirth = dto.DateOfBirth,
+                ClassId = dto.ClassId
             };
 
-            var createdStudent = await _repository.AddAsync(student);
+            // Save to database
+            var createdStudent =
+                await _repository.AddAsync(student);
 
+            // Entity → DTO
             return new StudentDto
             {
                 StudentId = createdStudent.StudentId,
@@ -70,27 +95,73 @@ namespace EduTek.Application.Services
                 LastName = createdStudent.LastName,
                 Email = createdStudent.Email,
                 PhoneNumber = createdStudent.PhoneNumber,
-                DateOfBirth = createdStudent.DateOfBirth
+                DateOfBirth = createdStudent.DateOfBirth,
+                ClassId = createdStudent.ClassId
             };
         }
 
-        //put -> dto to entity
-        public async Task<bool> UpdateAsync(int id, UpdateStudentDto dto)
+        // UPDATE
+        public async Task<bool> UpdateAsync(
+            int id,
+            UpdateStudentDto dto)
         {
+            // Check student exists
+            var existingStudent =
+                await _repository.GetByIdAsync(id);
+
+            if (existingStudent == null)
+                return false;
+
+            // Check class exists
+            var classEntity =
+                await _classRepository.GetByIdAsync(dto.ClassId);
+
+            if (classEntity == null)
+                throw new Exception("Class not found.");
+
+            // Check email belongs to another student
+            var emailExists =
+                await _repository.EmailExistsForOtherStudentAsync(
+                    dto.Email,
+                    id);
+
+            if (emailExists)
+                throw new Exception("Email already exists.");
+
+            // DTO → Entity
             var student = new Student
             {
                 FirstName = dto.FirstName,
                 LastName = dto.LastName,
                 Email = dto.Email,
                 PhoneNumber = dto.PhoneNumber,
-                DateOfBirth = dto.DateOfBirth
+                DateOfBirth = dto.DateOfBirth,
+                ClassId = dto.ClassId
             };
 
             return await _repository.UpdateAsync(id, student);
         }
 
+        // DELETE
         public async Task<bool> DeleteAsync(int id)
         {
+            // Check student exists
+            var student =
+                await _repository.GetByIdAsync(id);
+
+            if (student == null)
+                return false;
+
+            // Check whether attendance records exist
+            var hasAttendance =
+                await _repository.HasAttendanceAsync(id);
+
+            if (hasAttendance)
+            {
+                throw new Exception(
+                    "Cannot delete student - Attendance records exist. Deactivate instead.");
+            }
+
             return await _repository.DeleteAsync(id);
         }
     }

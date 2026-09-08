@@ -153,6 +153,12 @@ namespace EduTek.Infrastructure.Data
                 .HasForeignKey(f => f.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+
+            modelBuilder.Entity<Attendance>()
+               .HasIndex(a => new { a.StudentId, a.AttendanceDate })
+               .IsUnique();
+               
+
         }
 
 

@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EduTek.API.Controllers
 {
-    [Authorize(Roles = "Admin,Teacher")] //only admin can access controller
     [Route("api/[controller]")]
     [ApiController]
     public class StudentController : ControllerBase
@@ -18,7 +17,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Student
-        [Authorize]
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpGet]
         public async Task<IActionResult> GetStudents()
         {
@@ -27,24 +26,27 @@ namespace EduTek.API.Controllers
             return Ok(students);
         }
 
-        // GET: api/Student/1
+        // GET: api/Student/5
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetStudent(int id)
         {
             var student = await _service.GetByIdAsync(id);
 
             if (student == null)
-            {
-                return NotFound();
-            }
+                return NotFound(new
+                {
+                    message = "Student not found."
+                });
 
             return Ok(student);
         }
 
         // POST: api/Student
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> CreateStudent(CreateStudentDto dto)
+        public async Task<IActionResult> CreateStudent(
+            CreateStudentDto dto)
         {
             var createdStudent = await _service.CreateAsync(dto);
 
@@ -54,7 +56,8 @@ namespace EduTek.API.Controllers
                 createdStudent);
         }
 
-        // PUT: api/Student/1
+        // PUT: api/Student/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateStudent(
             int id,
@@ -63,46 +66,31 @@ namespace EduTek.API.Controllers
             var result = await _service.UpdateAsync(id, dto);
 
             if (!result)
-            {
-                return NotFound();
-            }
+                return NotFound(new
+                {
+                    message = "Student not found."
+                });
 
-            return Ok("Student updated successfully");
+            return Ok(new
+            {
+                message = "Student updated successfully."
+            });
         }
 
-        // DELETE: api/Student/1
+        // DELETE: api/Student/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteStudent(int id)
         {
             var result = await _service.DeleteAsync(id);
 
             if (!result)
-            {
-                return NotFound();
-            }
+                return NotFound(new
+                {
+                    message = "Student not found."
+                });
 
             return NoContent();
-        }
-
-        [HttpGet("error")] //GET /api/Student/error
-        public IActionResult TestError()
-        {
-            throw new Exception("Test exception");
-        }
-
-
-        [Authorize]
-        [HttpGet("secure")]
-        public IActionResult Secure()
-        {
-            return Ok("You are authenticated!");
-        }
-
-        [Authorize(Roles = "Admin")]
-        [HttpGet("admin")]
-        public IActionResult AdminOnly()
-        {
-            return Ok("Welcome Admin! You have access to this endpoint.");
         }
     }
 }

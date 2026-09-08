@@ -18,5 +18,10 @@ namespace EduTek.Infrastructure.Repositories
             int teacherId,
             int subjectId,
             int classId);
+        Task<bool> ExistsAsync(
+                int teacherId,
+                int subjectId,
+                int classId);
+
     }
 }

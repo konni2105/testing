@@ -72,5 +72,20 @@ namespace EduTek.Infrastructure.Repositories
 
             return true;
         }
+
+        public async Task<bool> ExistsAsync(
+            int subjectId,
+            int classId,
+            DateTime examDate)
+        {
+            var dayStart = examDate.Date;
+            var nextDay = dayStart.AddDays(1);
+
+            return await _context.Exams.AnyAsync(e =>
+                e.SubjectId == subjectId &&
+                e.ClassId == classId &&
+                e.ExamDate >= dayStart &&
+                e.ExamDate < nextDay);
+        }
     }
 }

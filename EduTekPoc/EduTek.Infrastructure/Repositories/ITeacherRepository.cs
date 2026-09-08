@@ -1,6 +1,4 @@
-﻿
-
-using EduTek.Infrastructure.Models;
+﻿using EduTek.Infrastructure.Models;
 
 namespace EduTek.Infrastructure.Repositories
 {
@@ -10,10 +8,23 @@ namespace EduTek.Infrastructure.Repositories
 
         Task<Teacher?> GetByIdAsync(int id);
 
-        Task<Teacher> AddAsync(Teacher teacher);
+        Task<Teacher> AddAsync(
+            Teacher teacher);
 
-        Task<bool> UpdateAsync(int id, Teacher teacher);
+        Task<bool> UpdateAsync(
+            int id,
+            Teacher teacher);
 
         Task<bool> DeleteAsync(int id);
+
+        Task<bool> EmailExistsAsync(
+            string email);
+
+        Task<bool> EmailExistsForOtherTeacherAsync(
+            string email,
+            int teacherId);
+
+        Task<bool> HasSubjectClassAssignmentsAsync(
+            int teacherId);
     }
 }

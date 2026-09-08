@@ -18,5 +18,10 @@ namespace EduTek.Application.Services
             int teacherId,
             int subjectId,
             int classId);
+
+        Task<bool> ExistsAsync(
+            int teacherId,
+            int subjectId,
+            int classId);
     }
 }

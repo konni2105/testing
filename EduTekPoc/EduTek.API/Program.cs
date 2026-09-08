@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -52,7 +53,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<IStudentRepository, StudentRepository>();
+builder.Services. AddScoped<IStudentRepository, StudentRepository>();
 builder.Services.AddScoped<IStudentService, StudentService>();
 
 builder.Services.AddScoped<ITeacherRepository, TeacherRepository>();
@@ -99,11 +100,22 @@ app.UseHttpsRedirection();
 app.UseMiddleware<RequestLoggingMiddleware>();
 
 app.UseMiddleware<ExceptionHandlingMiddleware>();
+//app.Run();
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+    
+    Console.WriteLine($"Database: {context.Database.GetDbConnection().Database}");
+    Console.WriteLine($"Server: {context.Database.GetDbConnection().DataSource}");
+    
+}
 
 app.Run();

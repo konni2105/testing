@@ -8,7 +8,8 @@ namespace EduTek.Infrastructure.Repositories
     {
         private readonly AppDbContext _context;
 
-        public AttendanceRepository(AppDbContext context)
+        public AttendanceRepository(
+            AppDbContext context)
         {
             _context = context;
         }
@@ -26,10 +27,12 @@ namespace EduTek.Infrastructure.Repositories
             return await _context.Attendances
                 .Include(a => a.Student)
                 .Include(a => a.Subject)
-                .FirstOrDefaultAsync(a => a.AttendanceId == id);
+                .FirstOrDefaultAsync(
+                    a => a.AttendanceId == id);
         }
 
-        public async Task<Attendance> AddAsync(Attendance attendance)
+        public async Task<Attendance> AddAsync(
+            Attendance attendance)
         {
             _context.Attendances.Add(attendance);
 
@@ -38,7 +41,9 @@ namespace EduTek.Infrastructure.Repositories
             return attendance;
         }
 
-        public async Task<bool> UpdateAsync(int id, Attendance attendance)
+        public async Task<bool> UpdateAsync(
+            int id,
+            Attendance attendance)
         {
             var existingAttendance =
                 await _context.Attendances.FindAsync(id);
@@ -76,26 +81,42 @@ namespace EduTek.Infrastructure.Repositories
             return true;
         }
 
-        //Does this exact Teacher + Subject + Class assignment exist?
         public async Task<bool> IsTeacherAssignedAsync(
             int teacherId,
             int subjectId,
             int classId)
-            {
-                return await _context.TeacherSubjectClasses.AnyAsync(x =>
+        {
+            return await _context.TeacherSubjectClasses
+                .AnyAsync(x =>
                     x.TeacherId == teacherId &&
                     x.SubjectId == subjectId &&
                     x.ClassId == classId);
         }
 
-        //Does this Student actually belong to this Class?
         public async Task<bool> IsStudentInClassAsync(
-        int studentId,
-        int classId)
-            {
-            return await _context.Students.AnyAsync(x =>
-                x.StudentId == studentId &&
-                x.ClassId == classId);
+            int studentId,
+            int classId)
+        {
+            return await _context.Students
+                .AnyAsync(x =>
+                    x.StudentId == studentId &&
+                    x.ClassId == classId);
+        }
+
+        public async Task<bool> ExistsAsync(
+            int studentId,
+            int subjectId,
+            DateTime attendanceDate)
+        {
+            var dayStart = attendanceDate.Date;
+            var nextDay = dayStart.AddDays(1);
+
+            return await _context.Attendances
+                .AnyAsync(a =>
+                    a.StudentId == studentId &&
+                    a.SubjectId == subjectId &&
+                    a.AttendanceDate >= dayStart &&
+                    a.AttendanceDate < nextDay);
         }
     }
 }

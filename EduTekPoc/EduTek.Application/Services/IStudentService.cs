@@ -8,9 +8,12 @@ namespace EduTek.Application.Services
 
         Task<StudentDto?> GetByIdAsync(int id);
 
-        Task<StudentDto> CreateAsync(CreateStudentDto dto);
+        Task<StudentDto> CreateAsync(
+            CreateStudentDto dto);
 
-        Task<bool> UpdateAsync(int id, UpdateStudentDto dto);
+        Task<bool> UpdateAsync(
+            int id,
+            UpdateStudentDto dto);
 
         Task<bool> DeleteAsync(int id);
     }

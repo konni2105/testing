@@ -11,5 +11,7 @@ namespace EduTek.Infrastructure.Repositories
         Task<bool> DeleteAsync(int classId, int subjectId);
 
         Task<List<ClassSubject>> GetAllAsync();
+
+        Task<bool> ExistsAsync(int classId, int subjectId);
     }
 }

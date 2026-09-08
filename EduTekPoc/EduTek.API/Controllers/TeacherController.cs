@@ -1,6 +1,5 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
-using EduTek.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,17 +23,7 @@ namespace EduTek.API.Controllers
         {
             var teachers = await _teacherService.GetAllAsync();
 
-            var response = teachers.Select(t => new TeacherDto
-            {
-                TeacherId = t.TeacherId,
-                FirstName = t.FirstName,
-                LastName = t.LastName,
-                Email = t.Email,
-                PhoneNumber = t.PhoneNumber,
-                
-            });
-
-            return Ok(response);
+            return Ok(teachers);
         }
 
         // GET: api/Teacher/5
@@ -51,55 +40,21 @@ namespace EduTek.API.Controllers
                 });
             }
 
-            var response = new TeacherDto
-            {
-                TeacherId = teacher.TeacherId,
-                FirstName = teacher.FirstName,
-                LastName = teacher.LastName,
-                Email = teacher.Email,
-                PhoneNumber = teacher.PhoneNumber,
-               
-            };
-
-            return Ok(response);
+            return Ok(teacher);
         }
 
         // POST: api/Teacher
         [HttpPost]
-        public async Task<IActionResult> Create(CreateTeacherDto dto)
+        public async Task<IActionResult> Create(
+            CreateTeacherDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // DTO → Entity
-            var teacher = new Teacher
-            {
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-             
-            };
-
-            var createdTeacher = await _teacherService.AddAsync(teacher);
-
-            // Entity → Response DTO
-            var response = new TeacherDto
-            {
-                TeacherId = createdTeacher.TeacherId,
-                FirstName = createdTeacher.FirstName,
-                LastName = createdTeacher.LastName,
-                Email = createdTeacher.Email,
-                PhoneNumber = createdTeacher.PhoneNumber,
-              
-            };
+            var createdTeacher =
+                await _teacherService.AddAsync(dto);
 
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = createdTeacher.TeacherId },
-                response);
+                createdTeacher);
         }
 
         // PUT: api/Teacher/5
@@ -108,23 +63,8 @@ namespace EduTek.API.Controllers
             int id,
             UpdateTeacherDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // DTO → Entity
-            var teacher = new Teacher
-            {
-                TeacherId = id,
-                FirstName = dto.FirstName,
-                LastName = dto.LastName,
-                Email = dto.Email,
-                PhoneNumber = dto.PhoneNumber,
-               
-            };
-
-            var updated = await _teacherService.UpdateAsync(id, teacher);
+            var updated =
+                await _teacherService.UpdateAsync(id, dto);
 
             if (!updated)
             {
@@ -144,7 +84,8 @@ namespace EduTek.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _teacherService.DeleteAsync(id);
+            var deleted =
+                await _teacherService.DeleteAsync(id);
 
             if (!deleted)
             {
