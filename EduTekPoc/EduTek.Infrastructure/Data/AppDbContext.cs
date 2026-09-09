@@ -1,4 +1,4 @@
-﻿using EduTek.Infrastructure.Models;
+using EduTek.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EduTek.Infrastructure.Data
@@ -33,9 +33,16 @@ namespace EduTek.Infrastructure.Data
 
         public DbSet<Feedback> Feedbacks { get; set; }
 
+        public DbSet<User> Users { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            // User configuration
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Username)
+                .IsUnique();
 
             // Department → Subject
             modelBuilder.Entity<Subject>()

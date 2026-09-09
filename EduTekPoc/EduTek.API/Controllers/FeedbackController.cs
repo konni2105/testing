@@ -1,6 +1,5 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
-using EduTek.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -24,18 +23,7 @@ namespace EduTek.API.Controllers
         {
             var feedbacks = await _feedbackService.GetAllAsync();
 
-            var response = feedbacks.Select(f => new FeedbackDto
-            {
-                FeedbackId = f.FeedbackId,
-                TeacherId = f.TeacherId,
-                TeacherName = $"{f.Teacher.FirstName} {f.Teacher.LastName}",
-                StudentId = f.StudentId,
-                StudentName = $"{f.Student.FirstName} {f.Student.LastName}",
-                Comments = f.Comments,
-                FeedbackDate = f.FeedbackDate
-            }).ToList();
-
-            return Ok(response);
+            return Ok(feedbacks);
         }
 
         // GET: api/Feedback/1
@@ -53,20 +41,7 @@ namespace EduTek.API.Controllers
                 });
             }
 
-            var response = new FeedbackDto
-            {
-                FeedbackId = feedback.FeedbackId,
-                TeacherId = feedback.TeacherId,
-                TeacherName =
-                    $"{feedback.Teacher.FirstName} {feedback.Teacher.LastName}",
-                StudentId = feedback.StudentId,
-                StudentName =
-                    $"{feedback.Student.FirstName} {feedback.Student.LastName}",
-                Comments = feedback.Comments,
-                FeedbackDate = feedback.FeedbackDate
-            };
-
-            return Ok(response);
+            return Ok(feedback);
         }
 
         // POST: api/Feedback
@@ -80,25 +55,13 @@ namespace EduTek.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var feedback = new Feedback
-            {
-                TeacherId = dto.TeacherId,
-                StudentId = dto.StudentId,
-                Comments = dto.Comments,
-                FeedbackDate = dto.FeedbackDate
-            };
-
             var created =
-                await _feedbackService.AddAsync(feedback);
+                await _feedbackService.AddAsync(dto);
 
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = created.FeedbackId },
-                new
-                {
-                    message = "Feedback created successfully.",
-                    feedbackId = created.FeedbackId
-                });
+                created);
         }
 
         // PUT: api/Feedback/1
@@ -113,14 +76,8 @@ namespace EduTek.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var feedback = new Feedback
-            {
-                Comments = dto.Comments,
-                FeedbackDate = dto.FeedbackDate
-            };
-
             var updated =
-                await _feedbackService.UpdateAsync(id, feedback);
+                await _feedbackService.UpdateAsync(id, dto);
 
             if (!updated)
             {

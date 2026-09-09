@@ -1,19 +1,18 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
-using EduTek.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EduTek.API.Controllers
 {
-   
     [Route("api/[controller]")]
     [ApiController]
     public class SubjectController : ControllerBase
     {
         private readonly ISubjectService _subjectService;
 
-        public SubjectController(ISubjectService subjectService)
+        public SubjectController(
+            ISubjectService subjectService)
         {
             _subjectService = subjectService;
         }
@@ -23,16 +22,10 @@ namespace EduTek.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var subjects = await _subjectService.GetAllAsync();
+            var subjects =
+                await _subjectService.GetAllAsync();
 
-            var response = subjects.Select(s => new SubjectDto
-            {
-                SubjectId = s.SubjectId,
-                SubjectName = s.SubjectName,
-                Description = s.Description
-            });
-
-            return Ok(response);
+            return Ok(subjects);
         }
 
         // GET: api/Subject/5
@@ -40,7 +33,8 @@ namespace EduTek.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var subject = await _subjectService.GetByIdAsync(id);
+            var subject =
+                await _subjectService.GetByIdAsync(id);
 
             if (subject == null)
             {
@@ -50,47 +44,22 @@ namespace EduTek.API.Controllers
                 });
             }
 
-            var response = new SubjectDto
-            {
-                SubjectId = subject.SubjectId,
-                SubjectName = subject.SubjectName,
-                Description = subject.Description
-            };
-
-            return Ok(response);
+            return Ok(subject);
         }
 
         // POST: api/Subject
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateSubjectDto dto)
+        public async Task<IActionResult> Create(
+            CreateSubjectDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // DTO → Entity
-            var subject = new Subject
-            {
-                SubjectName = dto.SubjectName,
-                Description = dto.Description
-            };
-
-            var createdSubject = await _subjectService.AddAsync(subject);
-
-            // Entity → Response DTO
-            var response = new SubjectDto
-            {
-                SubjectId = createdSubject.SubjectId,
-                SubjectName = createdSubject.SubjectName,
-                Description = createdSubject.Description
-            };
+            var createdSubject =
+                await _subjectService.AddAsync(dto);
 
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = createdSubject.SubjectId },
-                response);
+                createdSubject);
         }
 
         // PUT: api/Subject/5
@@ -100,20 +69,8 @@ namespace EduTek.API.Controllers
             int id,
             UpdateSubjectDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            // DTO → Entity
-            var subject = new Subject
-            {
-                SubjectId = id,
-                SubjectName = dto.SubjectName,
-                Description = dto.Description
-            };
-
-            var updated = await _subjectService.UpdateAsync(id, subject);
+            var updated =
+                await _subjectService.UpdateAsync(id, dto);
 
             if (!updated)
             {
@@ -134,7 +91,8 @@ namespace EduTek.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _subjectService.DeleteAsync(id);
+            var deleted =
+                await _subjectService.DeleteAsync(id);
 
             if (!deleted)
             {

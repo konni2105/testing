@@ -48,8 +48,6 @@ namespace EduTek.Infrastructure.Repositories
             }
 
             existingExam.ExamName = exam.ExamName;
-            existingExam.SubjectId = exam.SubjectId;
-            existingExam.ClassId = exam.ClassId;
             existingExam.ExamDate = exam.ExamDate;
 
             await _context.SaveChangesAsync();

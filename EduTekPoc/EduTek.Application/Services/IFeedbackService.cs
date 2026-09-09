@@ -1,16 +1,18 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
 
 namespace EduTek.Application.Services
 {
     public interface IFeedbackService
     {
-        Task<List<Feedback>> GetAllAsync();
+        Task<List<FeedbackDto>> GetAllAsync();
 
-        Task<Feedback?> GetByIdAsync(int id);
+        Task<FeedbackDto?> GetByIdAsync(int id);
 
-        Task<Feedback> AddAsync(Feedback feedback);
+        Task<FeedbackDto> AddAsync(CreateFeedbackDto dto);
 
-        Task<bool> UpdateAsync(int id, Feedback feedback);
+        Task<bool> UpdateAsync(
+            int id,
+            UpdateFeedbackDto dto);
 
         Task<bool> DeleteAsync(int id);
     }

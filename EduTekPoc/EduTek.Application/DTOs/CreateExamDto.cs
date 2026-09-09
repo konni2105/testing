@@ -5,7 +5,6 @@ namespace EduTek.Application.DTOs
     public class CreateExamDto
     {
         [Required]
-        [StringLength(100)]
         public string ExamName { get; set; } = string.Empty;
 
         [Required]

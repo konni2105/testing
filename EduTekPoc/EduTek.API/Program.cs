@@ -26,7 +26,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     Encoding.UTF8.GetBytes("EduTekSuperSecretKey1234567890ABC"))
         };
     });
-
+builder.Services.AddAuthorization();
 
 builder.Services.AddEndpointsApiExplorer();
 
@@ -86,6 +86,10 @@ builder.Services.AddScoped<IMarkService, MarkService>();
 
 builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
 builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPasswordHasherService, PasswordHasherService>();
+builder.Services.AddScoped<IAuthService, AuthService>();
 
 var app = builder.Build();
 

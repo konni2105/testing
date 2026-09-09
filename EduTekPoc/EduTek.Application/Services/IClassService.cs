@@ -1,16 +1,18 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
 
 namespace EduTek.Application.Services
 {
     public interface IClassService
     {
-        Task<List<Class>> GetAllAsync();
+        Task<List<ClassDto>> GetAllAsync();
 
-        Task<Class?> GetByIdAsync(int id);
+        Task<ClassDto?> GetByIdAsync(int id);
 
-        Task<Class> AddAsync(Class classEntity);
+        Task<ClassDto> AddAsync(CreateClassDto dto);
 
-        Task<bool> UpdateAsync(int id, Class classEntity);
+        Task<bool> UpdateAsync(
+            int id,
+            UpdateClassDto dto);
 
         Task<bool> DeleteAsync(int id);
     }

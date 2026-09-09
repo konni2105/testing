@@ -48,6 +48,11 @@ namespace EduTek.API.Controllers
         public async Task<IActionResult> Create(
             CreateTeacherDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var createdTeacher =
                 await _teacherService.AddAsync(dto);
 
@@ -63,6 +68,11 @@ namespace EduTek.API.Controllers
             int id,
             UpdateTeacherDto dto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             var updated =
                 await _teacherService.UpdateAsync(id, dto);
 

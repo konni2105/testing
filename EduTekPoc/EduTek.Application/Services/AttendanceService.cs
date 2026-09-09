@@ -139,8 +139,14 @@ namespace EduTek.Application.Services
             return new AttendanceDto
             {
                 AttendanceId = created.AttendanceId,
+
                 StudentId = created.StudentId,
+                StudentName =
+         $"{student.FirstName} {student.LastName}",
+
                 SubjectId = created.SubjectId,
+                SubjectName = subject.SubjectName,
+
                 AttendanceDate = created.AttendanceDate,
                 IsPresent = created.IsPresent
             };

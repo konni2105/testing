@@ -1,4 +1,5 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
+using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
 namespace EduTek.Application.Services
@@ -22,21 +23,56 @@ namespace EduTek.Application.Services
             _classSubjectRepository = classSubjectRepository;
         }
 
-        public async Task<List<Exam>> GetAllAsync()
+        public async Task<List<ExamDto>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            var exams = await _repository.GetAllAsync();
+
+            return exams.Select(e => new ExamDto
+            {
+                ExamId = e.ExamId,
+                ExamName = e.ExamName,
+
+                SubjectId = e.SubjectId,
+                SubjectName = e.Subject.SubjectName,
+
+                ClassId = e.ClassId,
+                ClassName = e.Class.ClassName,
+
+                ExamDate = e.ExamDate
+            }).ToList();
         }
 
-        public async Task<Exam?> GetByIdAsync(int id)
+        public async Task<ExamDto?> GetByIdAsync(int id)
         {
-            return await _repository.GetByIdAsync(id);
+            var exam = await _repository.GetByIdAsync(id);
+
+            if (exam == null)
+            {
+                return null;
+            }
+
+            return new ExamDto
+            {
+                ExamId = exam.ExamId,
+                ExamName = exam.ExamName,
+
+                SubjectId = exam.SubjectId,
+                SubjectName = exam.Subject.SubjectName,
+
+                ClassId = exam.ClassId,
+                ClassName = exam.Class.ClassName,
+
+                ExamDate = exam.ExamDate
+            };
         }
 
-        public async Task<Exam> AddAsync(Exam exam)
+        public async Task<ExamDto> AddAsync(
+            CreateExamDto dto)
         {
             // 1. Check Subject exists
             var subject =
-                await _subjectRepository.GetByIdAsync(exam.SubjectId);
+                await _subjectRepository.GetByIdAsync(
+                    dto.SubjectId);
 
             if (subject == null)
             {
@@ -45,18 +81,19 @@ namespace EduTek.Application.Services
 
             // 2. Check Class exists
             var classEntity =
-                await _classRepository.GetByIdAsync(exam.ClassId);
+                await _classRepository.GetByIdAsync(
+                    dto.ClassId);
 
             if (classEntity == null)
             {
                 throw new Exception("Class not found.");
             }
 
-            // 3. Check Subject is assigned to this Class
+            // 3. Check Subject is assigned to Class
             var subjectAssigned =
                 await _classSubjectRepository.ExistsAsync(
-                    exam.ClassId,
-                    exam.SubjectId);
+                    dto.ClassId,
+                    dto.SubjectId);
 
             if (!subjectAssigned)
             {
@@ -67,9 +104,9 @@ namespace EduTek.Application.Services
             // 4. Check duplicate exam
             var examExists =
                 await _repository.ExistsAsync(
-                    exam.SubjectId,
-                    exam.ClassId,
-                    exam.ExamDate);
+                    dto.SubjectId,
+                    dto.ClassId,
+                    dto.ExamDate);
 
             if (examExists)
             {
@@ -77,12 +114,56 @@ namespace EduTek.Application.Services
                     "An exam already exists for this subject, class, and date.");
             }
 
-            return await _repository.AddAsync(exam);
+            // 5. DTO → Entity
+            var exam = new Exam
+            {
+                ExamName = dto.ExamName,
+                SubjectId = dto.SubjectId,
+                ClassId = dto.ClassId,
+                ExamDate = dto.ExamDate
+            };
+
+            // 6. Save through Repository
+            var created =
+                await _repository.AddAsync(exam);
+
+            // 7. Entity → DTO
+            return new ExamDto
+            {
+                ExamId = created.ExamId,
+                ExamName = created.ExamName,
+
+                SubjectId = created.SubjectId,
+                SubjectName = subject.SubjectName,
+
+                ClassId = created.ClassId,
+                ClassName = classEntity.ClassName,
+
+                ExamDate = created.ExamDate
+            };
         }
 
-        public async Task<bool> UpdateAsync(int id, Exam exam)
+        public async Task<bool> UpdateAsync(
+            int id,
+            UpdateExamDto dto)
         {
-            return await _repository.UpdateAsync(id, exam);
+            var existingExam =
+                await _repository.GetByIdAsync(id);
+
+            if (existingExam == null)
+            {
+                return false;
+            }
+
+            var exam = new Exam
+            {
+                ExamName = dto.ExamName,
+                ExamDate = dto.ExamDate
+            };
+
+            return await _repository.UpdateAsync(
+                id,
+                exam);
         }
 
         public async Task<bool> DeleteAsync(int id)

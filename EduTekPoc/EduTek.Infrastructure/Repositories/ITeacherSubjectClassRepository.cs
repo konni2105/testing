@@ -1,27 +1,28 @@
 ﻿using EduTek.Infrastructure.Models;
 
-namespace EduTek.Infrastructure.Repositories
+public interface ITeacherSubjectClassRepository
 {
-    public interface ITeacherSubjectClassRepository
-    {
-        Task<List<TeacherSubjectClass>> GetAllAsync();
+    Task<List<TeacherSubjectClass>> GetAllAsync();
 
-        Task<TeacherSubjectClass?> GetAsync(
-            int teacherId,
-            int subjectId,
-            int classId);
+    Task<TeacherSubjectClass?> GetAsync(
+        int teacherId,
+        int subjectId,
+        int classId);
 
-        Task<TeacherSubjectClass> AddAsync(
-            TeacherSubjectClass assignment);
+    Task<TeacherSubjectClass> AddAsync(
+        TeacherSubjectClass assignment);
 
-        Task<bool> DeleteAsync(
-            int teacherId,
-            int subjectId,
-            int classId);
-        Task<bool> ExistsAsync(
-                int teacherId,
-                int subjectId,
-                int classId);
+    Task<bool> DeleteAsync(
+        int teacherId,
+        int subjectId,
+        int classId);
 
-    }
+    Task<bool> ExistsAsync(
+        int teacherId,
+        int subjectId,
+        int classId);
+
+    Task<bool> ExistsByTeacherAndClassAsync(
+    int teacherId,
+    int classId);
 }

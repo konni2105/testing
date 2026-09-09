@@ -1,6 +1,5 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
-using EduTek.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,19 +24,7 @@ namespace EduTek.API.Controllers
         {
             var assignments = await _service.GetAllAsync();
 
-            var response = assignments.Select(x => new
-            {
-                x.TeacherId,
-                TeacherName = $"{x.Teacher.FirstName} {x.Teacher.LastName}",
-
-                x.SubjectId,
-                SubjectName = x.Subject.SubjectName,
-
-                x.ClassId,
-                ClassName = x.Class.ClassName
-            });
-
-            return Ok(response);
+            return Ok(assignments);
         }
 
         // GET: api/TeacherSubjectClass/1/1/1
@@ -59,20 +46,7 @@ namespace EduTek.API.Controllers
                     "Teacher-Subject-Class assignment not found.");
             }
 
-            return Ok(new
-            {
-                assignment.TeacherId,
-                TeacherName =
-                    $"{assignment.Teacher.FirstName} {assignment.Teacher.LastName}",
-
-                assignment.SubjectId,
-                SubjectName =
-                    assignment.Subject.SubjectName,
-
-                assignment.ClassId,
-                ClassName =
-                    assignment.Class.ClassName
-            });
+            return Ok(assignment);
         }
 
         // POST: api/TeacherSubjectClass
@@ -81,30 +55,8 @@ namespace EduTek.API.Controllers
         public async Task<IActionResult> Create(
             CreateTeacherSubjectClassDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
 
-            var existing = await _service.GetAsync(
-                dto.TeacherId,
-                dto.SubjectId,
-                dto.ClassId);
-
-            if (existing != null)
-            {
-                return Conflict(
-                    "This teacher is already assigned to this subject and class.");
-            }
-
-            var assignment = new TeacherSubjectClass
-            {
-                TeacherId = dto.TeacherId,
-                SubjectId = dto.SubjectId,
-                ClassId = dto.ClassId
-            };
-
-            await _service.AddAsync(assignment);
+            await _service.AddAsync(dto);
 
             return Ok(
                 "Teacher assigned to subject and class successfully.");

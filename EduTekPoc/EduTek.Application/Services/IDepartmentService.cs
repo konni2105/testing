@@ -1,16 +1,19 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
 
 namespace EduTek.Application.Services
 {
     public interface IDepartmentService
     {
-        Task<List<Department>> GetAllAsync();
+        Task<List<DepartmentDto>> GetAllAsync();
 
-        Task<Department?> GetByIdAsync(int id);
+        Task<DepartmentDto?> GetByIdAsync(int id);
 
-        Task<Department> AddAsync(Department department);
+        Task<DepartmentDto> AddAsync(
+            CreateDepartmentDto dto);
 
-        Task<bool> UpdateAsync(int id, Department department);
+        Task<bool> UpdateAsync(
+            int id,
+            UpdateDepartmentDto dto);
 
         Task<bool> DeleteAsync(int id);
     }

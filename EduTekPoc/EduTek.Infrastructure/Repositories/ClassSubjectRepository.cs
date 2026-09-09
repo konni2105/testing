@@ -21,9 +21,13 @@ namespace EduTek.Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<ClassSubject?> GetAsync(int classId, int subjectId)
+        public async Task<ClassSubject?> GetAsync(
+                int classId,
+                int subjectId)
         {
             return await _context.ClassSubjects
+                .Include(cs => cs.Class)
+                .Include(cs => cs.Subject)
                 .FirstOrDefaultAsync(cs =>
                     cs.ClassId == classId &&
                     cs.SubjectId == subjectId);

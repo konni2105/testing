@@ -1,4 +1,5 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
+using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
 namespace EduTek.Application.Services
@@ -11,13 +12,13 @@ namespace EduTek.Application.Services
         private readonly ITeacherRepository _teacherRepository;
         private readonly ISubjectRepository _subjectRepository;
         private readonly IClassRepository _classRepository;
-        
+
         public TeacherSubjectClassService(
-             ITeacherSubjectClassRepository repository,
-             ITeacherRepository teacherRepository,
-             ISubjectRepository subjectRepository,
-             IClassRepository classRepository,
-             IClassSubjectRepository classSubjectRepository)
+            ITeacherSubjectClassRepository repository,
+            ITeacherRepository teacherRepository,
+            ISubjectRepository subjectRepository,
+            IClassRepository classRepository,
+            IClassSubjectRepository classSubjectRepository)
         {
             _repository = repository;
             _teacherRepository = teacherRepository;
@@ -26,40 +27,69 @@ namespace EduTek.Application.Services
             _classSubjectRepository = classSubjectRepository;
         }
 
-        public async Task<List<TeacherSubjectClass>> GetAllAsync()
+        public async Task<List<TeacherSubjectClassDto>> GetAllAsync()
         {
-            return await _repository.GetAllAsync();
+            var assignments = await _repository.GetAllAsync();
+
+            return assignments.Select(x => new TeacherSubjectClassDto
+            {
+                TeacherId = x.TeacherId,
+                TeacherName = $"{x.Teacher.FirstName} {x.Teacher.LastName}",
+
+                SubjectId = x.SubjectId,
+                SubjectName = x.Subject.SubjectName,
+
+                ClassId = x.ClassId,
+                ClassName = x.Class.ClassName
+            }).ToList();
         }
 
-        public async Task<TeacherSubjectClass?> GetAsync(
+        public async Task<TeacherSubjectClassDto?> GetAsync(
             int teacherId,
             int subjectId,
             int classId)
         {
-            return await _repository.GetAsync(
+            var assignment = await _repository.GetAsync(
                 teacherId,
                 subjectId,
                 classId);
+
+            if (assignment == null)
+            {
+                return null;
+            }
+
+            return new TeacherSubjectClassDto
+            {
+                TeacherId = assignment.TeacherId,
+                TeacherName =
+                    $"{assignment.Teacher.FirstName} {assignment.Teacher.LastName}",
+
+                SubjectId = assignment.SubjectId,
+                SubjectName =
+                    assignment.Subject.SubjectName,
+
+                ClassId = assignment.ClassId,
+                ClassName =
+                    assignment.Class.ClassName
+            };
         }
 
-        public async Task<TeacherSubjectClass> AddAsync(
-                TeacherSubjectClass assignment)
+        public async Task<TeacherSubjectClassDto> AddAsync(
+            CreateTeacherSubjectClassDto dto)
         {
             // 1. Check Teacher exists
             var teacher =
-                await _teacherRepository.GetByIdAsync(
-                    assignment.TeacherId);
+                await _teacherRepository.GetByIdAsync(dto.TeacherId);
 
             if (teacher == null)
             {
                 throw new Exception("Teacher not found.");
             }
 
-
             // 2. Check Subject exists
             var subject =
-                await _subjectRepository.GetByIdAsync(
-                    assignment.SubjectId);
+                await _subjectRepository.GetByIdAsync(dto.SubjectId);
 
             if (subject == null)
             {
@@ -68,8 +98,7 @@ namespace EduTek.Application.Services
 
             // 3. Check Class exists
             var classEntity =
-                await _classRepository.GetByIdAsync(
-                    assignment.ClassId);
+                await _classRepository.GetByIdAsync(dto.ClassId);
 
             if (classEntity == null)
             {
@@ -79,8 +108,8 @@ namespace EduTek.Application.Services
             // 4. Check Subject is assigned to this Class
             var subjectAssigned =
                 await _classSubjectRepository.ExistsAsync(
-                    assignment.ClassId,
-                    assignment.SubjectId);
+                    dto.ClassId,
+                    dto.SubjectId);
 
             if (!subjectAssigned)
             {
@@ -91,9 +120,9 @@ namespace EduTek.Application.Services
             // 5. Check duplicate assignment
             var assignmentExists =
                 await _repository.ExistsAsync(
-                    assignment.TeacherId,
-                    assignment.SubjectId,
-                    assignment.ClassId);
+                    dto.TeacherId,
+                    dto.SubjectId,
+                    dto.ClassId);
 
             if (assignmentExists)
             {
@@ -101,7 +130,32 @@ namespace EduTek.Application.Services
                     "Teacher is already assigned to this subject and class.");
             }
 
-            return await _repository.AddAsync(assignment);
+            // 6. DTO → Entity mapping
+            var assignment = new TeacherSubjectClass
+            {
+                TeacherId = dto.TeacherId,
+                SubjectId = dto.SubjectId,
+                ClassId = dto.ClassId
+            };
+
+            // 7. Save through Repository
+            var createdAssignment =
+                await _repository.AddAsync(assignment);
+
+            // 8. Entity → DTO mapping
+            return new TeacherSubjectClassDto
+            {
+                TeacherId = createdAssignment.TeacherId,
+                SubjectId = createdAssignment.SubjectId,
+                ClassId = createdAssignment.ClassId,
+
+                TeacherName =
+                    $"{teacher.FirstName} {teacher.LastName}",
+
+                SubjectName = subject.SubjectName,
+
+                ClassName = classEntity.ClassName
+            };
         }
 
         public async Task<bool> DeleteAsync(

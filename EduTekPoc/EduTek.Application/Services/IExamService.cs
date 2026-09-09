@@ -1,16 +1,19 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
 
 namespace EduTek.Application.Services
 {
     public interface IExamService
     {
-        Task<List<Exam>> GetAllAsync();
+        Task<List<ExamDto>> GetAllAsync();
 
-        Task<Exam?> GetByIdAsync(int id);
+        Task<ExamDto?> GetByIdAsync(int id);
 
-        Task<Exam> AddAsync(Exam exam);
+        Task<ExamDto> AddAsync(
+            CreateExamDto dto);
 
-        Task<bool> UpdateAsync(int id, Exam exam);
+        Task<bool> UpdateAsync(
+            int id,
+            UpdateExamDto dto);
 
         Task<bool> DeleteAsync(int id);
     }

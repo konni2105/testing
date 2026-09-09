@@ -64,5 +64,42 @@ namespace EduTek.Infrastructure.Repositories
 
             return true;
         }
+
+        public async Task<bool> NameExistsAsync(string subjectName)
+        {
+            return await _context.Subjects
+                .AnyAsync(s => s.SubjectName == subjectName);
+        }
+
+        
+
+        //delete checks
+        public async Task<bool> NameExistsForOtherSubjectAsync(
+            string subjectName,
+            int subjectId)
+                {
+            return await _context.Subjects
+                .AnyAsync(s =>
+                    s.SubjectName == subjectName &&
+                    s.SubjectId != subjectId);
+        }
+
+        public async Task<bool> HasTeacherAssignmentsAsync(int subjectId)
+        {
+            return await _context.TeacherSubjectClasses
+                .AnyAsync(x => x.SubjectId == subjectId);
+        }
+
+        public async Task<bool> HasExamRecordsAsync(int subjectId)
+        {
+            return await _context.Exams
+                .AnyAsync(x => x.SubjectId == subjectId);
+        }
+
+        public async Task<bool> HasClassAssignmentsAsync(int subjectId)
+        {
+            return await _context.ClassSubjects
+                .AnyAsync(x => x.SubjectId == subjectId);
+        }
     }
 }

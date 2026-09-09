@@ -1,6 +1,5 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
-using EduTek.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,30 +11,22 @@ namespace EduTek.API.Controllers
     {
         private readonly IClassSubjectService _service;
 
-        public ClassSubjectController(IClassSubjectService service)
+        public ClassSubjectController(
+            IClassSubjectService service)
         {
             _service = service;
         }
 
-        // GET: api/ClassSubject
         [Authorize(Roles = "Admin,Teacher")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var classSubjects = await _service.GetAllAsync();
+            var classSubjects =
+                await _service.GetAllAsync();
 
-            var response = classSubjects.Select(cs => new
-            {
-                cs.ClassId,
-                ClassName = cs.Class.ClassName,
-                cs.SubjectId,
-                SubjectName = cs.Subject.SubjectName
-            });
-
-            return Ok(response);
+            return Ok(classSubjects);
         }
 
-        // GET: api/ClassSubject/1/2
         [Authorize(Roles = "Admin,Teacher")]
         [HttpGet("{classId}/{subjectId}")]
         public async Task<IActionResult> Get(
@@ -43,53 +34,33 @@ namespace EduTek.API.Controllers
             int subjectId)
         {
             var classSubject =
-                await _service.GetAsync(classId, subjectId);
+                await _service.GetAsync(
+                    classId,
+                    subjectId);
 
             if (classSubject == null)
             {
-                return NotFound("Class-Subject assignment not found.");
+                return NotFound(new
+                {
+                    message =
+                        "Class-Subject assignment not found."
+                });
             }
 
-            return Ok(new
-            {
-                classSubject.ClassId,
-                ClassName = classSubject.Class.ClassName,
-                classSubject.SubjectId,
-                SubjectName = classSubject.Subject.SubjectName
-            });
+            return Ok(classSubject);
         }
 
-        // POST: api/ClassSubject
         [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(
             CreateClassSubjectDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var created =
+                await _service.AddAsync(dto);
 
-            var existing =
-                await _service.GetAsync(dto.ClassId, dto.SubjectId);
-
-            if (existing != null)
-            {
-                return Conflict("This subject is already assigned to this class.");
-            }
-
-            var classSubject = new ClassSubject
-            {
-                ClassId = dto.ClassId,
-                SubjectId = dto.SubjectId
-            };
-
-            await _service.AddAsync(classSubject);
-
-            return Ok("Subject assigned to class successfully.");
+            return Ok(created);
         }
 
-        // DELETE: api/ClassSubject/1/2
         [Authorize(Roles = "Admin")]
         [HttpDelete("{classId}/{subjectId}")]
         public async Task<IActionResult> Delete(
@@ -97,14 +68,24 @@ namespace EduTek.API.Controllers
             int subjectId)
         {
             var deleted =
-                await _service.DeleteAsync(classId, subjectId);
+                await _service.DeleteAsync(
+                    classId,
+                    subjectId);
 
             if (!deleted)
             {
-                return NotFound("Class-Subject assignment not found.");
+                return NotFound(new
+                {
+                    message =
+                        "Class-Subject assignment not found."
+                });
             }
 
-            return Ok("Subject removed from class successfully.");
+            return Ok(new
+            {
+                message =
+                    "Subject removed from class successfully."
+            });
         }
     }
 }

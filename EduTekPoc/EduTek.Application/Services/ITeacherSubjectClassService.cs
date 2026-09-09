@@ -1,27 +1,24 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
 
 namespace EduTek.Application.Services
 {
     public interface ITeacherSubjectClassService
     {
-        Task<List<TeacherSubjectClass>> GetAllAsync();
+        Task<List<TeacherSubjectClassDto>> GetAllAsync();
 
-        Task<TeacherSubjectClass?> GetAsync(
+        Task<TeacherSubjectClassDto?> GetAsync(
             int teacherId,
             int subjectId,
             int classId);
 
-        Task<TeacherSubjectClass> AddAsync(
-            TeacherSubjectClass assignment);
+        Task<TeacherSubjectClassDto> AddAsync(
+            CreateTeacherSubjectClassDto dto);
 
         Task<bool> DeleteAsync(
             int teacherId,
             int subjectId,
             int classId);
 
-        Task<bool> ExistsAsync(
-            int teacherId,
-            int subjectId,
-            int classId);
+       
     }
 }

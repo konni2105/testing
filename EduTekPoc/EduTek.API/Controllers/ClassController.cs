@@ -1,6 +1,5 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Application.Services;
-using EduTek.Infrastructure.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,7 +11,8 @@ namespace EduTek.API.Controllers
     {
         private readonly IClassService _classService;
 
-        public ClassController(IClassService classService)
+        public ClassController(
+            IClassService classService)
         {
             _classService = classService;
         }
@@ -22,16 +22,10 @@ namespace EduTek.API.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var classes = await _classService.GetAllAsync();
+            var classes =
+                await _classService.GetAllAsync();
 
-            var response = classes.Select(c => new ClassDto
-            {
-                ClassId = c.ClassId,
-                ClassName = c.ClassName,
-                Description = c.Description
-            }).ToList();
-
-            return Ok(response);
+            return Ok(classes);
         }
 
         // GET: api/Class/1
@@ -39,7 +33,8 @@ namespace EduTek.API.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var classEntity = await _classService.GetByIdAsync(id);
+            var classEntity =
+                await _classService.GetByIdAsync(id);
 
             if (classEntity == null)
             {
@@ -49,45 +44,22 @@ namespace EduTek.API.Controllers
                 });
             }
 
-            var response = new ClassDto
-            {
-                ClassId = classEntity.ClassId,
-                ClassName = classEntity.ClassName,
-                Description = classEntity.Description
-            };
-
-            return Ok(response);
+            return Ok(classEntity);
         }
 
         // POST: api/Class
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateClassDto dto)
+        public async Task<IActionResult> Create(
+            CreateClassDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var classEntity = new Class
-            {
-                ClassName = dto.ClassName,
-                Description = dto.Description
-            };
-
-            var createdClass = await _classService.AddAsync(classEntity);
-
-            var response = new ClassDto
-            {
-                ClassId = createdClass.ClassId,
-                ClassName = createdClass.ClassName,
-                Description = createdClass.Description
-            };
+            var createdClass =
+                await _classService.AddAsync(dto);
 
             return CreatedAtAction(
                 nameof(GetById),
                 new { id = createdClass.ClassId },
-                response);
+                createdClass);
         }
 
         // PUT: api/Class/1
@@ -97,19 +69,10 @@ namespace EduTek.API.Controllers
             int id,
             UpdateClassDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            var classEntity = new Class
-            {
-                ClassId = id,
-                ClassName = dto.ClassName,
-                Description = dto.Description
-            };
-
-            var updated = await _classService.UpdateAsync(id, classEntity);
+            var updated =
+                await _classService.UpdateAsync(
+                    id,
+                    dto);
 
             if (!updated)
             {
@@ -130,7 +93,8 @@ namespace EduTek.API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            var deleted = await _classService.DeleteAsync(id);
+            var deleted =
+                await _classService.DeleteAsync(id);
 
             if (!deleted)
             {

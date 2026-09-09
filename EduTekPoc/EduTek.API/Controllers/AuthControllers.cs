@@ -1,8 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
+using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
+using EduTek.Application.DTOs;
+using EduTek.Application.Services;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 
 namespace EduTek.API.Controllers
 {
@@ -10,55 +15,81 @@ namespace EduTek.API.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        // Temporary users for POC/testing
-        private static readonly List<(string Username, string Password, string Role)> Users =
-            new()
-            {
-                ("admin", "1234", "Admin"),
-                ("teacher1", "1234", "Teacher"),
-                ("student1", "1234", "Student"),
-                ("parent1", "1234", "Parent")
-            };
+        private readonly IAuthService _authService;
+        private readonly IConfiguration _configuration;
 
-        [HttpPost("login")]
-        public IActionResult Login(string username, string password)
+        public AuthController(IAuthService authService, IConfiguration configuration)
         {
-            var user = Users.FirstOrDefault(u =>
-                u.Username == username &&
-                u.Password == password);
+            _authService = authService;
+            _configuration = configuration;
+        }
 
-            if (user == default)
+        // POST: /api/Auth/register
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+        {
+            try
             {
-                return Unauthorized("Invalid username or password");
+                var user = await _authService.RegisterAsync(dto);
+                return Ok(new { message = "User registered successfully.", user });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        // POST: /api/Auth/login
+        [HttpPost("login")]
+        public async Task<IActionResult> Login([FromBody] LoginDto dto)
+        {
+            var user = await _authService.ValidateCredentialsAsync(dto);
+
+            if (user == null)
+            {
+                return Unauthorized(new { message = "Invalid username or password." });
             }
 
-            // Claims = information stored inside JWT
+            var tokenResponse = GenerateJwtToken(user.Username, user.Role);
+            return Ok(tokenResponse);
+        }
+
+        private AuthResponseDto GenerateJwtToken(string username, string role)
+        {
+            var jwtSecret = _configuration["Jwt:SecretKey"] ?? "EduTekSuperSecretKey1234567890ABC";
+            var issuer = _configuration["Jwt:Issuer"] ?? "EduTekAPI";
+            var audience = _configuration["Jwt:Audience"] ?? "EduTekClient";
+            var expirationMinutes = int.Parse(_configuration["Jwt:DurationInMinutes"] ?? "60");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
             var claims = new[]
             {
-                new Claim(ClaimTypes.Name, user.Username),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, role)
             };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(
-                    "EduTekSuperSecretKey1234567890ABC"));
-
-            var credentials = new SigningCredentials(
-                key,
-                SecurityAlgorithms.HmacSha256);
+            var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
 
             var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(30),
+                expires: expiration,
                 signingCredentials: credentials);
 
-            var tokenString = new JwtSecurityTokenHandler()
-                .WriteToken(token);
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
 
-            return Ok(new
+            return new AuthResponseDto
             {
-                token = tokenString
-            });
+                Token = tokenString,
+                Username = username,
+                Role = role,
+                Expiration = expiration
+            };
         }
     }
 }

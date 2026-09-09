@@ -1,4 +1,5 @@
-﻿using EduTek.Infrastructure.Models;
+﻿using EduTek.Application.DTOs;
+using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
 namespace EduTek.Application.Services
@@ -7,29 +8,79 @@ namespace EduTek.Application.Services
     {
         private readonly IDepartmentRepository _departmentRepository;
 
-        public DepartmentService(IDepartmentRepository departmentRepository)
+        public DepartmentService(
+            IDepartmentRepository departmentRepository)
         {
             _departmentRepository = departmentRepository;
         }
 
-        public async Task<List<Department>> GetAllAsync()
+        public async Task<List<DepartmentDto>> GetAllAsync()
         {
-            return await _departmentRepository.GetAllAsync();
+            var departments =
+                await _departmentRepository.GetAllAsync();
+
+            return departments.Select(d => new DepartmentDto
+            {
+                DepartmentId = d.DepartmentId,
+                DepartmentName = d.DepartmentName,
+                Description = d.Description
+            }).ToList();
         }
 
-        public async Task<Department?> GetByIdAsync(int id)
+        public async Task<DepartmentDto?> GetByIdAsync(int id)
         {
-            return await _departmentRepository.GetByIdAsync(id);
+            var department =
+                await _departmentRepository.GetByIdAsync(id);
+
+            if (department == null)
+            {
+                return null;
+            }
+
+            return new DepartmentDto
+            {
+                DepartmentId = department.DepartmentId,
+                DepartmentName = department.DepartmentName,
+                Description = department.Description
+            };
         }
 
-        public async Task<Department> AddAsync(Department department)
+        public async Task<DepartmentDto> AddAsync(
+            CreateDepartmentDto dto)
         {
-            return await _departmentRepository.AddAsync(department);
+            // DTO → Entity
+            var department = new Department
+            {
+                DepartmentName = dto.DepartmentName,
+                Description = dto.Description
+            };
+
+            var createdDepartment =
+                await _departmentRepository.AddAsync(department);
+
+            // Entity → DTO
+            return new DepartmentDto
+            {
+                DepartmentId = createdDepartment.DepartmentId,
+                DepartmentName = createdDepartment.DepartmentName,
+                Description = createdDepartment.Description
+            };
         }
 
-        public async Task<bool> UpdateAsync(int id, Department department)
+        public async Task<bool> UpdateAsync(
+            int id,
+            UpdateDepartmentDto dto)
         {
-            return await _departmentRepository.UpdateAsync(id, department);
+            // DTO → Entity
+            var department = new Department
+            {
+                DepartmentName = dto.DepartmentName,
+                Description = dto.Description
+            };
+
+            return await _departmentRepository.UpdateAsync(
+                id,
+                department);
         }
 
         public async Task<bool> DeleteAsync(int id)
