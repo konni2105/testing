@@ -146,7 +146,7 @@ namespace EduTek.Infrastructure.Data
                 })
                 .IsUnique();
 
-            // Teacher → Feedback
+            // Teacher  Feedback
             modelBuilder.Entity<Feedback>()
                 .HasOne(f => f.Teacher)
                 .WithMany(t => t.Feedbacks)
