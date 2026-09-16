@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EduTek.Infrastructure.Models
 {
@@ -12,9 +13,14 @@ namespace EduTek.Infrastructure.Models
 
         public string PasswordHash { get; set; } = string.Empty;
 
-        public string Role { get; set; } = "User"; // Admin, Teacher, Student, User
+        // public string Role { get; set; } = "User"; // Admin, Teacher, Student, User
 
-        public bool IsActive { get; set; } = true;
+        [ForeignKey("RoleId")]
+        public Role Role { get; set; } 
+
+        public  int RoleId { get; set; } 
+
+        public bool IsActive { get; set; } = false;
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }

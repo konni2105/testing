@@ -21,5 +21,7 @@ namespace EduTek.Application.DTOs
             MinimumLength = 6,
             ErrorMessage = "Password must be at least 6 characters long.")]
         public string Password { get; set; } = string.Empty;
-    }
+
+        public int RoleId { get; set; }
+     }
 }

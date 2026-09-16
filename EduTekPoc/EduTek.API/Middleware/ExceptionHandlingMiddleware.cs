@@ -27,13 +27,13 @@ namespace EduTek.API.Middleware
                     ex,
                     "An unhandled exception occurred.");
 
-                context.Response.StatusCode = 400;
+                context.Response.StatusCode = 500;
                 context.Response.ContentType = "application/json";
 
                 await context.Response.WriteAsJsonAsync(new
                 {
-                    statusCode = 400,
-                    message = ex.Message
+                    statusCode = 500,
+                    message = "An unexpected error occurred."
                 });
             }
         }

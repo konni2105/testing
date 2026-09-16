@@ -35,7 +35,10 @@ namespace EduTek.Infrastructure.Repositories
 
             await _context.SaveChangesAsync();
 
-            return feedback;
+            return await _context.Feedbacks
+                .Include(f => f.Teacher)
+                .Include(f => f.Student)
+                .FirstAsync(f => f.FeedbackId == feedback.FeedbackId);
         }
 
         public async Task<bool> UpdateAsync(int id, Feedback feedback)

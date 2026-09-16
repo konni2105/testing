@@ -17,7 +17,7 @@ namespace EduTek.API.Controllers
             _service = service;
         }
 
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -27,7 +27,7 @@ namespace EduTek.API.Controllers
             return Ok(classSubjects);
         }
 
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet("{classId}/{subjectId}")]
         public async Task<IActionResult> Get(
             int classId,

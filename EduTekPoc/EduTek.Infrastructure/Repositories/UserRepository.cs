@@ -22,9 +22,10 @@ namespace EduTek.Infrastructure.Repositories
         public async Task<User?> GetByUsernameAsync(string username)
         {
             return await _context.Users
-                .FirstOrDefaultAsync(u => u.Username.ToLower() == username.ToLower());
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(
+                    u => u.Username.ToLower() == username.ToLower());
         }
-
         public async Task<User> AddAsync(User user)
         {
             _context.Users.Add(user);
@@ -36,6 +37,31 @@ namespace EduTek.Infrastructure.Repositories
         {
             return await _context.Users
                 .AnyAsync(u => u.Username.ToLower() == username.ToLower());
+        }
+
+        public async Task<List<User>> GetPendingUsersAsync()
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .Where(u => !u.IsActive)
+                .ToListAsync();
+        }
+
+        public async Task<bool> UpdateAsync(User user)
+        {
+            var existingUser = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == user.UserId);
+
+            if (existingUser == null)
+            {
+                return false;
+            }
+
+            existingUser.IsActive = user.IsActive;
+
+            await _context.SaveChangesAsync();
+
+            return true;
         }
     }
 }

@@ -11,7 +11,9 @@ namespace EduTek.Application.Services
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasherService _passwordHasher;
 
-        public AuthService(IUserRepository userRepository, IPasswordHasherService passwordHasher)
+        public AuthService(
+            IUserRepository userRepository,
+            IPasswordHasherService passwordHasher)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
@@ -21,35 +23,45 @@ namespace EduTek.Application.Services
         {
             if (await _userRepository.ExistsByUsernameAsync(dto.Username))
             {
-                throw new InvalidOperationException($"Username '{dto.Username}' is already taken.");
+                throw new InvalidOperationException(
+                    $"Username '{dto.Username}' is already taken.");
             }
 
-            var passwordHash = _passwordHasher.HashPassword(dto.Password);
+            var passwordHash =
+                _passwordHasher.HashPassword(dto.Password);
 
             var user = new User
             {
                 Username = dto.Username,
                 Email = dto.Email,
                 PasswordHash = passwordHash,
-                Role = "User",
-                IsActive = true,
+                RoleId = dto.RoleId,
+                IsActive = dto.RoleId == 1,
                 CreatedAt = DateTime.UtcNow
             };
 
-            var createdUser = await _userRepository.AddAsync(user);
+            var createdUser =
+                await _userRepository.AddAsync(user);
 
             return MapToDto(createdUser);
         }
 
-        public async Task<UserDto?> ValidateCredentialsAsync(LoginDto dto)
+        public async Task<UserDto?> ValidateCredentialsAsync(
+            LoginDto dto)
         {
-            var user = await _userRepository.GetByUsernameAsync(dto.Username);
+            var user =
+                await _userRepository.GetByUsernameAsync(dto.Username);
+
             if (user == null || !user.IsActive)
             {
                 return null;
             }
 
-            var isValidPassword = _passwordHasher.VerifyPassword(dto.Password, user.PasswordHash);
+            var isValidPassword =
+                _passwordHasher.VerifyPassword(
+                    dto.Password,
+                    user.PasswordHash);
+
             if (!isValidPassword)
             {
                 return null;
@@ -65,7 +77,7 @@ namespace EduTek.Application.Services
                 UserId = user.UserId,
                 Username = user.Username,
                 Email = user.Email,
-                Role = user.Role,
+                Role = user.Role?.Name ?? string.Empty,
                 IsActive = user.IsActive,
                 CreatedAt = user.CreatedAt
             };

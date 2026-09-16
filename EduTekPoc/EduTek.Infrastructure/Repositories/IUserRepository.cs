@@ -9,5 +9,10 @@ namespace EduTek.Infrastructure.Repositories
         Task<User?> GetByUsernameAsync(string username);
         Task<User> AddAsync(User user);
         Task<bool> ExistsByUsernameAsync(string username);
+        Task<List<User>> GetPendingUsersAsync();
+
+        Task<bool> UpdateAsync(User user);
+
+
     }
 }

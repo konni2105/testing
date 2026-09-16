@@ -17,7 +17,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Exam
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -27,7 +27,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Exam/1
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -45,7 +45,7 @@ namespace EduTek.API.Controllers
         }
 
         // POST: api/Exam
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpPost]
         public async Task<IActionResult> Create(CreateExamDto dto)
         {
@@ -58,7 +58,7 @@ namespace EduTek.API.Controllers
         }
 
         // PUT: api/Exam/1
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,

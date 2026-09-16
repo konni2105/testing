@@ -9,7 +9,9 @@ namespace EduTek.API.Controllers
     [ApiController]
     public class AttendanceController : ControllerBase
     {
-        private readonly IAttendanceService _attendanceService;
+        private readonly IAttendanceService 
+            
+            _attendanceService;
 
         public AttendanceController(
             IAttendanceService attendanceService)
@@ -17,7 +19,7 @@ namespace EduTek.API.Controllers
             _attendanceService = attendanceService;
         }
 
-        [Authorize(Roles = "Admin,Teacher")]
+      [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -27,7 +29,7 @@ namespace EduTek.API.Controllers
             return Ok(attendanceRecords);
         }
 
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -79,7 +81,7 @@ namespace EduTek.API.Controllers
             });
         }
 
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

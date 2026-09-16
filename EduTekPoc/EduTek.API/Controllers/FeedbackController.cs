@@ -17,7 +17,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Feedback
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -27,7 +27,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Feedback/1
-        [Authorize(Roles = "Admin,Teacher")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -45,7 +45,7 @@ namespace EduTek.API.Controllers
         }
 
         // POST: api/Feedback
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpPost]
         public async Task<IActionResult> Create(
             CreateFeedbackDto dto)
@@ -65,7 +65,7 @@ namespace EduTek.API.Controllers
         }
 
         // PUT: api/Feedback/1
-        [Authorize(Roles = "Teacher")]
+        [Authorize(Roles = "Admin,Teacher")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,

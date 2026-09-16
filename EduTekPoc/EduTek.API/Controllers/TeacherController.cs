@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EduTek.API.Controllers
 {
-    [Authorize(Roles = "Admin")]
+   
     [Route("api/[controller]")]
     [ApiController]
     public class TeacherController : ControllerBase
@@ -18,6 +18,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Teacher
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -27,6 +28,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Teacher/5
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
@@ -44,6 +46,7 @@ namespace EduTek.API.Controllers
         }
 
         // POST: api/Teacher
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(
             CreateTeacherDto dto)
@@ -63,6 +66,7 @@ namespace EduTek.API.Controllers
         }
 
         // PUT: api/Teacher/5
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(
             int id,
@@ -91,6 +95,7 @@ namespace EduTek.API.Controllers
         }
 
         // DELETE: api/Teacher/5
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

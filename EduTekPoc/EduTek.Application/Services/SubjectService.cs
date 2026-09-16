@@ -60,7 +60,8 @@ namespace EduTek.Application.Services
             var subject = new Subject
             {
                 SubjectName = dto.SubjectName,
-                Description = dto.Description
+                Description = dto.Description,
+                 DepartmentId = dto.DepartmentId
             };
 
             var createdSubject =
@@ -98,7 +99,8 @@ namespace EduTek.Application.Services
             var subject = new Subject
             {
                 SubjectName = dto.SubjectName,
-                Description = dto.Description
+                Description = dto.Description,
+                
             };
 
             return await _repository.UpdateAsync(

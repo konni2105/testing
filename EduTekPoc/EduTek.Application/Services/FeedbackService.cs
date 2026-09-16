@@ -9,15 +9,18 @@ namespace EduTek.Application.Services
         private readonly IFeedbackRepository _repository;
         private readonly IStudentRepository _studentRepository;
         private readonly ITeacherSubjectClassRepository _teacherSubjectClassRepository;
+        private readonly ITeacherRepository _teacherRepository;
 
         public FeedbackService(
             IFeedbackRepository repository,
             IStudentRepository studentRepository,
-            ITeacherSubjectClassRepository teacherSubjectClassRepository)
+            ITeacherSubjectClassRepository teacherSubjectClassRepository,
+             ITeacherRepository teacherRepository)
         {
             _repository = repository;
             _studentRepository = studentRepository;
             _teacherSubjectClassRepository = teacherSubjectClassRepository;
+                 _teacherRepository = teacherRepository;
         }
 
         public async Task<List<FeedbackDto>> GetAllAsync()
@@ -81,6 +84,15 @@ namespace EduTek.Application.Services
                 throw new Exception("Student not found.");
             }
 
+            //checks teacher exists 
+            var teacher =
+                await _teacherRepository.GetByIdAsync(dto.TeacherId);
+
+            if (teacher == null)
+            {
+                throw new Exception("Teacher not found.");
+            }
+
             // 2. Check Teacher is assigned to student's class
             var teacherAssigned =
                 await _teacherSubjectClassRepository
@@ -113,6 +125,8 @@ namespace EduTek.Application.Services
                 FeedbackId = created.FeedbackId,
 
                 TeacherId = created.TeacherId,
+                TeacherName =
+                    $"{teacher.FirstName} {teacher.LastName}",
 
                 StudentId = created.StudentId,
 

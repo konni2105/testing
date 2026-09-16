@@ -7,6 +7,7 @@ namespace EduTek.Infrastructure.Repositories
     public class TeacherRepository : ITeacherRepository
     {
         private readonly AppDbContext _context;
+        private readonly ITeacherRepository _teacherRepository;
 
         public TeacherRepository(AppDbContext context)
         {

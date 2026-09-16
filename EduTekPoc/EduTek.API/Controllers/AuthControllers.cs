@@ -1,13 +1,16 @@
+using EduTek.Application.DTOs;
+using EduTek.Application.Services;
+using EduTek.Infrastructure.Data;
+using EduTek.Infrastructure.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
-using EduTek.Application.DTOs;
-using EduTek.Application.Services;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 
 namespace EduTek.API.Controllers
 {
@@ -18,24 +21,38 @@ namespace EduTek.API.Controllers
         private readonly IAuthService _authService;
         private readonly IConfiguration _configuration;
 
-        public AuthController(IAuthService authService, IConfiguration configuration)
+ 
+
+        public AuthController(IAuthService authService, IConfiguration configuration )
         {
             _authService = authService;
             _configuration = configuration;
+           
         }
 
-        // POST: /api/Auth/register
+
+
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto dto)
+        public async Task<IActionResult> Register(RegisterDto dto)
         {
             try
             {
                 var user = await _authService.RegisterAsync(dto);
-                return Ok(new { message = "User registered successfully.", user });
+
+                return Ok(new
+                {
+                    message = user.IsActive
+                    ? "Admin registered successfully. You can login."
+                    : "Registered successfully. Wait for admin approval.",
+                                userId = user.UserId
+                });
             }
             catch (InvalidOperationException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new
+                {
+                    message = ex.Message
+                });
             }
         }
 
@@ -53,6 +70,8 @@ namespace EduTek.API.Controllers
             var tokenResponse = GenerateJwtToken(user.Username, user.Role);
             return Ok(tokenResponse);
         }
+
+
 
         private AuthResponseDto GenerateJwtToken(string username, string role)
         {

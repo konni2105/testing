@@ -35,6 +35,8 @@ namespace EduTek.Infrastructure.Data
 
         public DbSet<User> Users { get; set; }
 
+        public DbSet<Role> Roles { get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -44,21 +46,21 @@ namespace EduTek.Infrastructure.Data
                 .HasIndex(u => u.Username)
                 .IsUnique();
 
-            // Department → Subject
+            // Department - Subject
             modelBuilder.Entity<Subject>()
                 .HasOne(s => s.Department)
                 .WithMany(d => d.Subjects)
                 .HasForeignKey(s => s.DepartmentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Class → Student
+            // Class - Student
             modelBuilder.Entity<Student>()
                 .HasOne(s => s.Class)
                 .WithMany(c => c.Students)
                 .HasForeignKey(s => s.ClassId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Class ↔ Subject
+            // Class - Subject
             modelBuilder.Entity<ClassSubject>()
                 .HasKey(cs => new { cs.ClassId, cs.SubjectId });
 
@@ -72,7 +74,7 @@ namespace EduTek.Infrastructure.Data
                 .WithMany(s => s.ClassSubjects)
                 .HasForeignKey(cs => cs.SubjectId);
 
-            // Teacher ↔ Subject ↔ Class
+            // Teacher - Subject - Class
             modelBuilder.Entity<TeacherSubjectClass>()
                 .HasKey(tsc => new
                 {
@@ -96,42 +98,42 @@ namespace EduTek.Infrastructure.Data
                 .WithMany(c => c.TeacherSubjectClasses)
                 .HasForeignKey(tsc => tsc.ClassId);
 
-            // Student → Attendance
+            // Student - Attendance
             modelBuilder.Entity<Attendance>()
                 .HasOne(a => a.Student)
                 .WithMany(s => s.Attendances)
                 .HasForeignKey(a => a.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Subject → Attendance
+            // Subject - Attendance
             modelBuilder.Entity<Attendance>()
                 .HasOne(a => a.Subject)
                 .WithMany(s => s.Attendances)
                 .HasForeignKey(a => a.SubjectId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Subject → Exam
+            // Subject - Exam
             modelBuilder.Entity<Exam>()
                 .HasOne(e => e.Subject)
                 .WithMany(s => s.Exams)
                 .HasForeignKey(e => e.SubjectId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Class → Exam
+            // Class - Exam
             modelBuilder.Entity<Exam>()
                 .HasOne(e => e.Class)
                 .WithMany(c => c.Exams)
                 .HasForeignKey(e => e.ClassId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Exam → Mark
+            // Exam - Mark
             modelBuilder.Entity<Mark>()
                 .HasOne(m => m.Exam)
                 .WithMany(e => e.Marks)
                 .HasForeignKey(m => m.ExamId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Student → Mark
+            // Student - Mark
             modelBuilder.Entity<Mark>()
                 .HasOne(m => m.Student)
                 .WithMany(s => s.Marks)
@@ -146,7 +148,9 @@ namespace EduTek.Infrastructure.Data
                 })
                 .IsUnique();
 
-            // Teacher  Feedback
+            modelBuilder.Entity<Mark>().Property(m => m.Score).HasColumnType("decimal(18,2)");
+
+            // Teacher - Feedback
             modelBuilder.Entity<Feedback>()
                 .HasOne(f => f.Teacher)
                 .WithMany(t => t.Feedbacks)
@@ -159,6 +163,19 @@ namespace EduTek.Infrastructure.Data
                 .WithMany(s => s.Feedbacks)
                 .HasForeignKey(f => f.StudentId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<User>()
+               .HasOne(u=> u.Role)
+               .WithMany(r => r.Users)
+               .HasForeignKey(f => f.RoleId)
+               .OnDelete(DeleteBehavior.Restrict);
+
+            //modelBuilder.Entity<Role>().HasData(
+
+            //    new Role { Id = 1, Name = "Admin" },
+            //    new Role { Id = 2, Name = "Teacher" },
+            //    new Role { Id = 3, Name = "Student" }
+            //    );
 
 
             modelBuilder.Entity<Attendance>()
