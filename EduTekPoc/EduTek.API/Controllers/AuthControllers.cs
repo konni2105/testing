@@ -67,48 +67,17 @@ namespace EduTek.API.Controllers
                 return Unauthorized(new { message = "Invalid username or password." });
             }
 
-            var tokenResponse = GenerateJwtToken(user.Username, user.Role);
+            //var tokenResponse = GenerateJwtToken(user.Username, user.Role);
+            //return Ok(tokenResponse);
+            var tokenResponse = await _authService.LoginAsync(dto);
+
             return Ok(tokenResponse);
         }
 
+     
 
 
-        private AuthResponseDto GenerateJwtToken(string username, string role)
-        {
-            var jwtSecret = _configuration["Jwt:SecretKey"] ?? "EduTekSuperSecretKey1234567890ABC";
-            var issuer = _configuration["Jwt:Issuer"] ?? "EduTekAPI";
-            var audience = _configuration["Jwt:Audience"] ?? "EduTekClient";
-            var expirationMinutes = int.Parse(_configuration["Jwt:DurationInMinutes"] ?? "60");
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role)
-            };
-
-            var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
-
-            var token = new JwtSecurityToken(
-                issuer: issuer,
-                audience: audience,
-                claims: claims,
-                expires: expiration,
-                signingCredentials: credentials);
-
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
-
-            return new AuthResponseDto
-            {
-                Token = tokenString,
-                Username = username,
-                Role = role,
-                Expiration = expiration
-            };
-        }
+        
     }
 }

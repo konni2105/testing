@@ -13,6 +13,8 @@ namespace EduTek.Infrastructure.Repositories
 
         Task<bool> UpdateAsync(User user);
 
+        Task<User?> GetByRefreshTokenAsync(string refreshToken);
+
 
     }
 }

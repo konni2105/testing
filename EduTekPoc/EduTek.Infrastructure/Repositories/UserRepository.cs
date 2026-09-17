@@ -58,10 +58,20 @@ namespace EduTek.Infrastructure.Repositories
             }
 
             existingUser.IsActive = user.IsActive;
+            existingUser.RefreshToken = user.RefreshToken;
+            existingUser.RefreshTokenExpiryTime = user.RefreshTokenExpiryTime;
 
             await _context.SaveChangesAsync();
 
             return true;
+        }
+
+        public async Task<User?> GetByRefreshTokenAsync(string refreshToken)
+        {
+            return await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(
+                    u => u.RefreshToken == refreshToken);
         }
     }
 }

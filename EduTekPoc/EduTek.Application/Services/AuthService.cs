@@ -1,8 +1,14 @@
-using System;
-using System.Threading.Tasks;
 using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
+using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
+using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace EduTek.Application.Services
 {
@@ -10,13 +16,16 @@ namespace EduTek.Application.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasherService _passwordHasher;
+        private readonly IConfiguration _configuration;
 
         public AuthService(
-            IUserRepository userRepository,
-            IPasswordHasherService passwordHasher)
+                 IUserRepository userRepository,
+                 IPasswordHasherService passwordHasher,
+                 IConfiguration configuration)
         {
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _configuration = configuration;
         }
 
         public async Task<UserDto> RegisterAsync(RegisterDto dto)
@@ -68,6 +77,121 @@ namespace EduTek.Application.Services
             }
 
             return MapToDto(user);
+        }
+
+        public async Task<AuthResponseDto?> LoginAsync(LoginDto dto)
+        {
+            var user = await _userRepository.GetByUsernameAsync(dto.Username);
+
+            if (user == null || !user.IsActive)
+            {
+                return null;
+            }
+
+            var isValidPassword = _passwordHasher.VerifyPassword(
+                dto.Password,
+                user.PasswordHash);
+
+            if (!isValidPassword)
+            {
+                return null;
+            }
+
+            var role = user.Role?.Name ?? string.Empty;
+
+            var tokenResponse = GenerateJwtToken(
+                user.Username,
+                role);
+
+            user.RefreshToken = GenerateRefreshToken();
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _userRepository.UpdateAsync(user);
+
+            tokenResponse.RefreshToken = user.RefreshToken;
+
+            return tokenResponse;
+        }
+       
+       
+        public async Task<AuthResponseDto?> RefreshTokenAsync(string refreshToken)
+        {
+            var user = await _userRepository.GetByRefreshTokenAsync(refreshToken);
+
+            if (user == null || !user.IsActive)
+            {
+                return null;
+            }
+
+            if (user.RefreshTokenExpiryTime == null ||
+                user.RefreshTokenExpiryTime <= DateTime.UtcNow)
+            {
+                return null;
+            }
+
+            var role = user.Role?.Name ?? string.Empty;
+
+            var tokenResponse = GenerateJwtToken(
+                user.Username,
+                role);
+
+            user.RefreshToken = GenerateRefreshToken();
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+
+            await _userRepository.UpdateAsync(user);
+
+            tokenResponse.RefreshToken = user.RefreshToken;
+
+            return tokenResponse;
+        }
+
+        private string GenerateRefreshToken()
+        {
+            var randomBytes = new byte[64];
+
+            using var rng = RandomNumberGenerator.Create();
+
+            rng.GetBytes(randomBytes);
+
+            return Convert.ToBase64String(randomBytes);
+        }
+
+        private AuthResponseDto GenerateJwtToken(string username, string role)
+        {
+            var jwtSecret = _configuration["Jwt:SecretKey"] ?? "EduTekSuperSecretKey1234567890ABC";
+            var issuer = _configuration["Jwt:Issuer"] ?? "EduTekAPI";
+            var audience = _configuration["Jwt:Audience"] ?? "EduTekClient";
+            var expirationMinutes = int.Parse(_configuration["Jwt:DurationInMinutes"] ?? "60");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, username),
+                new Claim(ClaimTypes.Role, role)
+            };
+
+            var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
+
+            var token = new JwtSecurityToken(
+                issuer: issuer,
+                audience: audience,
+                claims: claims,
+                expires: expiration,
+                signingCredentials: credentials);
+
+            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+
+            return new AuthResponseDto
+            {
+                Token = tokenString,
+                Username = username,
+                Role = role,
+                Expiration = expiration
+            };
         }
 
         private static UserDto MapToDto(User user)

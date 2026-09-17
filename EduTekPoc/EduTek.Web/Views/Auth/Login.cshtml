@@ -1,0 +1,56 @@
+﻿@model EduTek.Web.Models.LoginViewModel
+
+@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div>
+        @ViewBag.Error
+    </div>
+}
+
+<form asp-controller="Auth" asp-action="Login" method="post">
+
+    <div>
+        <label>Username</label>
+        <input asp-for="Username" />
+    </div>
+
+    <br />
+
+    <div>
+        <label>Password</label>
+        <input asp-for="Password" type="password" />
+    </div>
+
+    <br />
+
+    <button type="submit">Login</button>
+
+</form>
+
+@if (ViewBag.Username != null)
+{
+    <hr />
+
+    <h3>Login Successful</h3>
+
+    <p>
+        <strong>Username:</strong>
+        @ViewBag.Username
+    </p>
+
+    <p>
+        <strong>Role:</strong>
+        @ViewBag.Role
+    </p>
+
+    <p>
+        <strong>Expiration:</strong>
+        @ViewBag.Expiration
+    </p>
+}
