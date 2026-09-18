@@ -1,0 +1,51 @@
+﻿@model EduTek.Web.Models.StudentViewModel
+
+@{
+    ViewData["Title"] = "Student Details";
+}
+
+<h1>Student Details</h1>
+
+<div>
+    <p>
+        <strong>Student ID:</strong>
+        @Model.StudentId
+    </p>
+
+    <p>
+        <strong>First Name:</strong>
+        @Model.FirstName
+    </p>
+
+    <p>
+        <strong>Last Name:</strong>
+        @Model.LastName
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        @Model.Email
+    </p>
+
+    <p>
+        <strong>Phone Number:</strong>
+        @Model.PhoneNumber
+    </p>
+
+    <p>
+        <strong>Date of Birth:</strong>
+        @Model.DateOfBirth.ToString("dd-MM-yyyy")
+    </p>
+
+    <p>
+        <strong>Class ID:</strong>
+        @Model.ClassId
+    </p>
+</div>
+
+<br />
+
+<a asp-controller="Student"
+   asp-action="Index">
+    Back to Students
+</a>

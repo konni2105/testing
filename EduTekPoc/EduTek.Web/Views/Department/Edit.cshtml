@@ -1,0 +1,36 @@
+﻿@model EduTek.Web.Models.EditDepartmentViewModel
+
+@{
+    ViewData["Title"] = "Edit Department";
+}
+
+<h1>Edit Department</h1>
+
+<form asp-controller="Department"
+      asp-action="Edit"
+      method="post">
+
+    <input type="hidden" asp-for="DepartmentId" />
+
+    <div>
+        <label asp-for="DepartmentName"></label>
+        <input asp-for="DepartmentName" />
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description"></textarea>
+    </div>
+
+    <br />
+
+    <button type="submit">Update Department</button>
+
+    <a asp-controller="Department"
+       asp-action="Index">
+        Cancel
+    </a>
+
+</form>

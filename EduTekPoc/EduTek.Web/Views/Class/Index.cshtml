@@ -1,19 +1,21 @@
-﻿@model List<EduTek.Web.Models.StudentViewModel>
+﻿@model List<EduTek.Web.Models.ClassViewModel>
 
 @{
-    ViewData["Title"] = "Students";
+    ViewData["Title"] = "Classes";
     var role = Context.Session.GetString("Role");
 }
 
-<h1>Students</h1>
+<h1>Classes</h1>
 
 @if (role == "Admin")
 {
-    <a asp-controller="Student"
-       asp-action="Create">
-        Create Student
+    <a asp-controller="Class" asp-action="Create">
+        Create Class
     </a>
 }
+
+<br />
+<br />
 
 @if (Model != null && Model.Count > 0)
 {
@@ -21,48 +23,45 @@
 
         <thead>
             <tr>
-                <th>Student ID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Email</th>
-                <th>Phone Number</th>
-                <th>Date of Birth</th>
                 <th>Class ID</th>
+                <th>Class Name</th>
+                <th>Description</th>
                 <th>Actions</th>
             </tr>
         </thead>
 
         <tbody>
-            @foreach (var student in Model)
+
+            @foreach (var item in Model)
             {
                 <tr>
-                    <td>@student.StudentId</td>
-                    <td>@student.FirstName</td>
-                    <td>@student.LastName</td>
-                    <td>@student.Email</td>
-                    <td>@student.PhoneNumber</td>
-                    <td>@student.DateOfBirth.ToString("dd-MM-yyyy")</td>
-                    <td>@student.ClassId</td>
+                    <td>@item.ClassId</td>
+                    <td>@item.ClassName</td>
+                    <td>@item.Description</td>
+
                     <td>
-                        <a asp-controller="Student"
+
+                        <a asp-controller="Class"
                            asp-action="Details"
-                           asp-route-id="@student.StudentId">
+                           asp-route-id="@item.ClassId">
                             Details
                         </a>
+
                         @if (role == "Admin")
                         {
                             <span> | </span>
-                            <a asp-controller="Student"
+
+                            <a asp-controller="Class"
                                asp-action="Edit"
-                               asp-route-id="@student.StudentId">
+                               asp-route-id="@item.ClassId">
                                 Edit
                             </a>
-                        
+
                             <span> | </span>
 
-                            <form asp-controller="Student"
+                            <form asp-controller="Class"
                                   asp-action="Delete"
-                                  asp-route-id="@student.StudentId"
+                                  asp-route-id="@item.ClassId"
                                   method="post"
                                   style="display:inline;">
 
@@ -72,14 +71,16 @@
 
                             </form>
                         }
+
                     </td>
                 </tr>
             }
+
         </tbody>
 
     </table>
 }
 else
 {
-    <p>No students found.</p>
+    <p>No classes found.</p>
 }

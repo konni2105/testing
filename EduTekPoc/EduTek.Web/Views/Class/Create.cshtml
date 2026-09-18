@@ -1,0 +1,42 @@
+﻿@model EduTek.Web.Models.CreateClassViewModel
+
+@{
+    ViewData["Title"] = "Create Class";
+}
+
+<h1>Create Class</h1>
+
+<form asp-controller="Class"
+      asp-action="Create"
+      method="post">
+
+    <div>
+        <label asp-for="ClassName"></label>
+
+        <input asp-for="ClassName" />
+
+        <span asp-validation-for="ClassName"></span>
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Description"></label>
+
+        <textarea asp-for="Description"></textarea>
+
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <br />
+
+    <button type="submit">
+        Create Class
+    </button>
+
+    <a asp-controller="Class"
+       asp-action="Index">
+        Back to List
+    </a>
+
+</form>

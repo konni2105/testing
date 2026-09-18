@@ -5,30 +5,28 @@ using System.Text.Json;
 
 namespace EduTek.Web.Controllers
 {
-    public class StudentController : Controller
+    public class DepartmentController : Controller
     {
         private readonly IApiService _apiService;
 
-        public StudentController(IApiService apiService)
+        public DepartmentController(IApiService apiService)
         {
             _apiService = apiService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var response = await _apiService.GetAsync("api/Student");
+            var response = await _apiService.GetAsync("api/Department");
 
-            var students = JsonSerializer.Deserialize<List<StudentViewModel>>(
+            var departments = JsonSerializer.Deserialize<List<DepartmentViewModel>>(
                 response,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-            return View(students);
+            return View(departments);
         }
-
-
 
         [HttpGet]
         public IActionResult Create()
@@ -37,83 +35,83 @@ namespace EduTek.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateStudentViewModel model)
+        public async Task<IActionResult> Create(CreateDepartmentViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            await _apiService.PostAsync("api/Student", model);
+            await _apiService.PostAsync(
+                "api/Department",
+                model);
 
             return RedirectToAction(nameof(Index));
         }
 
-        [HttpGet]
         public async Task<IActionResult> Details(int id)
         {
-            var response = await _apiService.GetAsync($"api/Student/{id}");
+            var response = await _apiService.GetAsync(
+                $"api/Department/{id}");
 
-            var student = JsonSerializer.Deserialize<StudentViewModel>(
+            var department = JsonSerializer.Deserialize<DepartmentViewModel>(
                 response,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-            if (student == null)
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(department);
         }
-
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _apiService.GetAsync($"api/Student/{id}");
+            var response = await _apiService.GetAsync(
+                $"api/Department/{id}");
 
-            var student = JsonSerializer.Deserialize<EditStudentViewModel>(
+            var department = JsonSerializer.Deserialize<EditDepartmentViewModel>(
                 response,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-            if (student == null)
+            if (department == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            return View(department);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EditStudentViewModel model)
+        public async Task<IActionResult> Edit(EditDepartmentViewModel model)
         {
-
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-          await _apiService.PutAsync($"api/Student/{model.StudentId}",model);
+            await _apiService.PutAsync(
+                $"api/Department/{model.DepartmentId}",
+                model);
 
-            
             return RedirectToAction(nameof(Index));
-
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _apiService.DeleteAsync($"api/Student/{id}");
+            await _apiService.DeleteAsync(
+                $"api/Department/{id}");
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

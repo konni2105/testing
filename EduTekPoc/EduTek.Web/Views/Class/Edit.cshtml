@@ -1,0 +1,45 @@
+﻿@model EduTek.Web.Models.EditClassViewModel
+
+@{
+    ViewData["Title"] = "Edit Class";
+}
+
+<h1>Edit Class</h1>
+
+<form asp-controller="Class"
+      asp-action="Edit"
+      method="post">
+
+    <input type="hidden"
+           asp-for="ClassId" />
+
+    <div>
+        <label asp-for="ClassName"></label>
+
+        <input asp-for="ClassName" />
+
+        <span asp-validation-for="ClassName"></span>
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Description"></label>
+
+        <textarea asp-for="Description"></textarea>
+
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <br />
+
+    <button type="submit">
+        Update Class
+    </button>
+
+    <a asp-controller="Class"
+       asp-action="Index">
+        Cancel
+    </a>
+
+</form>

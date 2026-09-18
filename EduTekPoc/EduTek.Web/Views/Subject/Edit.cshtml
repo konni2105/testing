@@ -1,0 +1,45 @@
+﻿@model EduTek.Web.Models.EditSubjectViewModel
+
+@{
+    ViewData["Title"] = "Edit Subject";
+}
+
+<h1>Edit Subject</h1>
+
+<form asp-controller="Subject"
+      asp-action="Edit"
+      method="post">
+
+    <input type="hidden"
+           asp-for="SubjectId" />
+
+    <div>
+        <label asp-for="SubjectName"></label>
+
+        <input asp-for="SubjectName" />
+
+        <span asp-validation-for="SubjectName"></span>
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Description"></label>
+
+        <textarea asp-for="Description"></textarea>
+
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <br />
+
+    <button type="submit">
+        Update Subject
+    </button>
+
+    <a asp-controller="Subject"
+       asp-action="Index">
+        Cancel
+    </a>
+
+</form>

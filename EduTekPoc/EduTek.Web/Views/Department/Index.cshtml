@@ -1,0 +1,82 @@
+﻿@model List<EduTek.Web.Models.DepartmentViewModel>
+
+@{
+    ViewData["Title"] = "Departments";
+     var role = Context.Session.GetString("Role");
+}
+
+<h1>Departments</h1>
+
+
+@if (role == "Admin")
+{
+    <a asp-controller="Department"
+       asp-action="Create">
+        Create Department
+    </a>
+}
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Department ID</th>
+                <th>Department Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+
+
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var department in Model)
+            {
+                <tr>
+                    <td>@department.DepartmentId</td>
+                    <td>@department.DepartmentName</td>
+                    <td>@department.Description</td>
+                    <td>
+                            <a asp-controller="Department"
+                               asp-action="Details"
+                               asp-route-id="@department.DepartmentId">
+                                Details
+                            </a>
+
+                            @if (role == "Admin")
+                            {
+                                <span> | </span>
+
+                                <a asp-controller="Department"
+                                   asp-action="Edit"
+                                   asp-route-id="@department.DepartmentId">
+                                    Edit
+                                </a>
+
+                                <span> | </span>
+
+                                <form asp-controller="Department"
+                                      asp-action="Delete"
+                                      asp-route-id="@department.DepartmentId"
+                                      method="post"
+                                      style="display:inline;">
+
+                                    <button type="submit">
+                                        Delete
+                                    </button>
+
+                                    </form>
+                            }
+                      </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+else
+{
+    <p>No departments found.</p>
+}

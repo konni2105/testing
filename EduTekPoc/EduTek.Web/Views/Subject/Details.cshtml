@@ -1,0 +1,31 @@
+﻿@model EduTek.Web.Models.SubjectViewModel
+
+@{
+    ViewData["Title"] = "Subject Details";
+}
+
+<h1>Subject Details</h1>
+
+<div>
+    <p>
+        <strong>Subject ID:</strong>
+        @Model.SubjectId
+    </p>
+
+    <p>
+        <strong>Subject Name:</strong>
+        @Model.SubjectName
+    </p>
+
+    <p>
+        <strong>Description:</strong>
+        @Model.Description
+    </p>
+</div>
+
+<br />
+
+<a asp-controller="Subject"
+   asp-action="Index">
+    Back to List
+</a>

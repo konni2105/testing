@@ -1,0 +1,33 @@
+﻿@model EduTek.Web.Models.ClassViewModel
+
+@{
+    ViewData["Title"] = "Class Details";
+}
+
+<h1>Class Details</h1>
+
+<div>
+
+    <p>
+        <strong>Class ID:</strong>
+        @Model.ClassId
+    </p>
+
+    <p>
+        <strong>Class Name:</strong>
+        @Model.ClassName
+    </p>
+
+    <p>
+        <strong>Description:</strong>
+        @Model.Description
+    </p>
+
+</div>
+
+<br />
+
+<a asp-controller="Class"
+   asp-action="Index">
+    Back to List
+</a>

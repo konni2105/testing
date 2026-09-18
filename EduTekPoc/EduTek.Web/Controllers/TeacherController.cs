@@ -5,30 +5,47 @@ using System.Text.Json;
 
 namespace EduTek.Web.Controllers
 {
-    public class StudentController : Controller
+    public class TeacherController : Controller
     {
         private readonly IApiService _apiService;
 
-        public StudentController(IApiService apiService)
+        public TeacherController(IApiService apiService)
         {
             _apiService = apiService;
         }
 
         public async Task<IActionResult> Index()
         {
-            var response = await _apiService.GetAsync("api/Student");
+            var response = await _apiService.GetAsync("api/Teacher");
 
-            var students = JsonSerializer.Deserialize<List<StudentViewModel>>(
+            var teachers = JsonSerializer.Deserialize<List<TeacherViewModel>>(
                 response,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-            return View(students);
+            return View(teachers);
         }
 
+        public async Task<IActionResult> Details(int id)
+        {
+            var response = await _apiService.GetAsync($"api/Teacher/{id}");
 
+            var teacher = JsonSerializer.Deserialize<TeacherViewModel>(
+                response,
+                new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
+
+            if (teacher == null)
+            {
+                return NotFound();
+            }
+
+            return View(teacher);
+        }
 
         [HttpGet]
         public IActionResult Create()
@@ -37,83 +54,61 @@ namespace EduTek.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateStudentViewModel model)
+        public async Task<IActionResult> Create(CreateTeacherViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            await _apiService.PostAsync("api/Student", model);
+            await _apiService.PostAsync("api/Teacher", model);
 
             return RedirectToAction(nameof(Index));
         }
-
-        [HttpGet]
-        public async Task<IActionResult> Details(int id)
-        {
-            var response = await _apiService.GetAsync($"api/Student/{id}");
-
-            var student = JsonSerializer.Deserialize<StudentViewModel>(
-                response,
-                new JsonSerializerOptions
-                {
-                    PropertyNameCaseInsensitive = true
-                });
-
-            if (student == null)
-            {
-                return NotFound();
-            }
-
-            return View(student);
-        }
-
-
 
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var response = await _apiService.GetAsync($"api/Student/{id}");
+            var response = await _apiService.GetAsync($"api/Teacher/{id}");
 
-            var student = JsonSerializer.Deserialize<EditStudentViewModel>(
+            var teacher = JsonSerializer.Deserialize<EditTeacherViewModel>(
                 response,
                 new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true
                 });
 
-            if (student == null)
+            if (teacher == null)
             {
                 return NotFound();
             }
 
-            return View(student);
+            teacher.TeacherId = id;
+
+            return View(teacher);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(EditStudentViewModel model)
+        public async Task<IActionResult> Edit(EditTeacherViewModel model)
         {
-
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-          await _apiService.PutAsync($"api/Student/{model.StudentId}",model);
+            await _apiService.PutAsync(
+                $"api/Teacher/{model.TeacherId}",
+                model);
 
-            
             return RedirectToAction(nameof(Index));
-
         }
 
         [HttpPost]
         public async Task<IActionResult> Delete(int id)
         {
-            await _apiService.DeleteAsync($"api/Student/{id}");
+            await _apiService.DeleteAsync($"api/Teacher/{id}");
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

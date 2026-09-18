@@ -1,0 +1,45 @@
+﻿@{
+    ViewData["Title"] = "Dashboard";
+
+    var username = ViewBag.Username;
+    var role = ViewBag.Role;
+}
+
+<h1>Dashboard</h1>
+
+<h3>Welcome, @username</h3>
+
+@if (role == "Admin")
+{
+    <h4>Admin Dashboard</h4>
+
+    <p>You can manage all the existing things and other application data.</p>
+
+    <a asp-controller="Student" asp-action="Index">
+        Manage Students
+    </a>
+}
+else if (role == "Teacher")
+{
+    <h4>Teacher Dashboard</h4>
+
+    <p>You can view student information and perform teacher-related operations.</p>
+
+    <a asp-controller="Student" asp-action="Index">
+        View Students
+    </a>
+}
+else if (role == "Student")
+{
+    <h4>Student Dashboard</h4>
+
+    <p>You can view your available student information.</p>
+
+    <a asp-controller="Student" asp-action="Index">
+        View Students
+    </a>
+}
+else
+{
+    <p>Role not recognized.</p>
+}

@@ -1,0 +1,40 @@
+﻿@model EduTek.Web.Models.CreateSubjectViewModel
+
+@{
+    ViewData["Title"] = "Create Subject";
+}
+
+<h1>Create Subject</h1>
+
+<form asp-controller="Subject"
+      asp-action="Create"
+      method="post">
+
+    <div>
+        <label asp-for="SubjectName"></label>
+        <input asp-for="SubjectName" />
+
+        <span asp-validation-for="SubjectName"></span>
+    </div>
+
+    <br />
+
+    <div>
+        <label asp-for="Description"></label>
+        <textarea asp-for="Description"></textarea>
+
+        <span asp-validation-for="Description"></span>
+    </div>
+
+    <br />
+
+    <button type="submit">
+        Create Subject
+    </button>
+
+    <a asp-controller="Subject"
+       asp-action="Index">
+        Back to List
+    </a>
+
+</form>

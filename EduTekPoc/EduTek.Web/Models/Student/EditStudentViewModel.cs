@@ -1,6 +1,7 @@
-﻿namespace EduTek.Web.Models
+﻿using System.ComponentModel.DataAnnotations;
+namespace EduTek.Web.Models
 {
-    public class StudentViewModel
+    public class EditStudentViewModel
     {
         public int StudentId { get; set; }
 
