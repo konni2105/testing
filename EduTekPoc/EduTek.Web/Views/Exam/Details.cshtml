@@ -1,0 +1,84 @@
+﻿@model EduTek.Web.Models.ExamViewModel
+
+@{
+    ViewData["Title"] = "Exam Details";
+}
+
+<h2>Exam Details</h2>
+
+<div>
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Exam ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ExamId
+        </dd>
+
+        <dt class="col-sm-3">
+            Exam Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ExamName
+        </dd>
+
+        <dt class="col-sm-3">
+            Subject ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.SubjectId
+        </dd>
+
+        <dt class="col-sm-3">
+            Subject Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.SubjectName
+        </dd>
+
+        <dt class="col-sm-3">
+            Class ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ClassId
+        </dd>
+
+        <dt class="col-sm-3">
+            Class Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ClassName
+        </dd>
+
+        <dt class="col-sm-3">
+            Exam Date
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ExamDate.ToString("dd-MM-yyyy")
+        </dd>
+
+    </dl>
+</div>
+
+<div>
+    <a asp-controller="Exam"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+
+    @{
+        var role = Context.Session.GetString("Role");
+    }
+
+    @if (role == "Admin")
+    {
+        <a asp-controller="Exam"
+           asp-action="Edit"
+           asp-route-id="@Model.ExamId"
+           class="btn btn-warning">
+            Edit
+        </a>
+    }
+</div>

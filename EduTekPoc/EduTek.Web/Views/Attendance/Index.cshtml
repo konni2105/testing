@@ -1,0 +1,111 @@
+﻿@model List<EduTek.Web.Models.AttendanceViewModel>
+
+@{
+    ViewData["Title"] = "Attendance";
+
+    var role = Context.Session.GetString("Role");
+}
+
+<h2>Attendance</h2>
+
+@if (role == "Admin" || role == "Teacher")
+{
+    <p>
+        <a asp-controller="Attendance"
+           asp-action="Create"
+           class="btn btn-primary">
+            Mark Attendance
+        </a>
+    </p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Attendance ID</th>
+            <th>Student</th>
+            <th>Subject</th>
+            <th>Attendance Date</th>
+            <th>Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var attendance in Model)
+            {
+                <tr>
+                    <td>@attendance.AttendanceId</td>
+
+                    <td>
+                        @attendance.StudentName
+                    </td>
+
+                    <td>
+                        @attendance.SubjectName
+                    </td>
+
+                    <td>
+                        @attendance.AttendanceDate.ToString("dd-MM-yyyy")
+                    </td>
+
+                    <td>
+                        @if (attendance.IsPresent)
+                        {
+                            <span>Present</span>
+                        }
+                        else
+                        {
+                            <span>Absent</span>
+                        }
+                    </td>
+
+                    <td>
+                        <a asp-controller="Attendance"
+                           asp-action="Details"
+                           asp-route-id="@attendance.AttendanceId"
+                           class="btn btn-info">
+                            Details
+                        </a>
+
+                        @if (role == "Admin" || role == "Teacher")
+                        {
+                            <a asp-controller="Attendance"
+                               asp-action="Edit"
+                               asp-route-id="@attendance.AttendanceId"
+                               class="btn btn-warning">
+                                Edit
+                            </a>
+                        }
+
+                        @if (role == "Admin")
+                        {
+                            <form asp-controller="Attendance"
+                                  asp-action="Delete"
+                                  asp-route-id="@attendance.AttendanceId"
+                                  method="post"
+                                  style="display:inline;">
+
+                                <button type="submit"
+                                        class="btn btn-danger"
+                                        onclick="return confirm('Are you sure you want to delete this attendance record?');">
+                                    Delete
+                                </button>
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6">
+                    No attendance records found.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,65 @@
+﻿@model EduTek.Web.Models.FeedbackViewModel
+
+@{
+    ViewData["Title"] = "Feedback Details";
+    var role = Context.Session.GetString("Role");
+}
+
+<h1>Feedback Details</h1>
+
+<div>
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Feedback ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.FeedbackId
+        </dd>
+
+        <dt class="col-sm-3">
+            Teacher
+        </dt>
+        <dd class="col-sm-9">
+            @Model.TeacherName
+        </dd>
+
+        <dt class="col-sm-3">
+            Student
+        </dt>
+        <dd class="col-sm-9">
+            @Model.StudentName
+        </dd>
+
+        <dt class="col-sm-3">
+            Comments
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Comments
+        </dd>
+
+        <dt class="col-sm-3">
+            Feedback Date
+        </dt>
+        <dd class="col-sm-9">
+            @Model.FeedbackDate.ToString("dd-MM-yyyy")
+        </dd>
+
+    </dl>
+</div>
+
+<div>
+    @if (role == "Admin")
+    {
+        <a asp-action="Edit"
+           asp-route-id="@Model.FeedbackId"
+           class="btn btn-warning">
+            Edit
+        </a>
+    }
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+</div>

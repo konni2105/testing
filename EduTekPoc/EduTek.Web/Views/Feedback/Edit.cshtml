@@ -1,0 +1,84 @@
+﻿@model EduTek.Web.Models.EditFeedbackViewModel
+
+@{
+    ViewData["Title"] = "Edit Feedback";
+}
+
+<h1>Edit Feedback</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Edit" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger">
+            </div>
+
+            <input type="hidden"
+                   asp-for="FeedbackId" />
+
+            <div class="form-group mb-3">
+                <label class="control-label">
+                    Feedback ID
+                </label>
+
+                <input value="@Model.FeedbackId"
+                       class="form-control"
+                       readonly />
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Comments"
+                       class="control-label">
+                    Comments
+                </label>
+
+                <textarea asp-for="Comments"
+                          class="form-control"
+                          rows="5"
+                          maxlength="1000"></textarea>
+
+                <span asp-validation-for="Comments"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FeedbackDate"
+                       class="control-label">
+                    Feedback Date
+                </label>
+
+                <input asp-for="FeedbackDate"
+                       class="form-control"
+                       type="date" />
+
+                <span asp-validation-for="FeedbackDate"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit"
+                       value="Save"
+                       class="btn btn-primary" />
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Back to List
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

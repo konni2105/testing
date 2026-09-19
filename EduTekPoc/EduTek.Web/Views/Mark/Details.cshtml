@@ -1,0 +1,79 @@
+﻿@model EduTek.Web.Models.MarkViewModel
+
+@{
+    ViewData["Title"] = "Mark Details";
+}
+
+<h2>Mark Details</h2>
+
+<div>
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Mark ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.MarkId
+        </dd>
+
+        <dt class="col-sm-3">
+            Exam ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ExamId
+        </dd>
+
+        <dt class="col-sm-3">
+            Exam Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.ExamName
+        </dd>
+
+        <dt class="col-sm-3">
+            Student ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.StudentId
+        </dd>
+
+        <dt class="col-sm-3">
+            Student Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.StudentName
+        </dd>
+
+        <dt class="col-sm-3">
+            Score
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Score
+        </dd>
+
+    </dl>
+</div>
+
+<div>
+
+    <a asp-controller="Mark"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+
+    @{
+        var role = Context.Session.GetString("Role");
+    }
+
+    @if (role == "Admin" || role == "Teacher")
+    {
+        <a asp-controller="Mark"
+           asp-action="Edit"
+           asp-route-id="@Model.MarkId"
+           class="btn btn-warning">
+            Edit
+        </a>
+    }
+
+</div>

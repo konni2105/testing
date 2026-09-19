@@ -1,0 +1,50 @@
+﻿@model EduTek.Web.Models.EditMarkViewModel
+
+@{
+    ViewData["Title"] = "Edit Mark";
+}
+
+<h2>Edit Mark</h2>
+
+<form asp-controller="Mark"
+      asp-action="Edit"
+      method="post">
+
+    <input type="hidden"
+           asp-for="MarkId" />
+
+    <div class="mb-3">
+        <label asp-for="Score"
+               class="form-label">
+            Score
+        </label>
+
+        <input asp-for="Score"
+               type="number"
+               step="0.01"
+               min="0"
+               max="100"
+               class="form-control" />
+
+        <span asp-validation-for="Score"
+              class="text-danger"></span>
+    </div>
+
+    <button type="submit"
+            class="btn btn-warning">
+        Update
+    </button>
+
+    <a asp-controller="Mark"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

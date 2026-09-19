@@ -1,0 +1,82 @@
+﻿@model IEnumerable<EduTek.Web.Models.FeedbackViewModel>
+
+@{
+    ViewData["Title"] = "Feedback";
+    var role = Context.Session.GetString("Role");
+}
+
+<h1>Feedback</h1>
+
+@if (role == "Admin" || role == "Teacher")
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Add Feedback</a>
+    </p>
+}
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Feedback ID</th>
+            <th>Teacher</th>
+            <th>Student</th>
+            <th>Comments</th>
+            <th>Feedback Date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model != null && Model.Any())
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.FeedbackId</td>
+                    <td>@item.TeacherName</td>
+                    <td>@item.StudentName</td>
+                    <td>@item.Comments</td>
+                    <td>@item.FeedbackDate.ToString("dd-MM-yyyy")</td>
+
+                    <td>
+                        <a asp-action="Details"
+                           asp-route-id="@item.FeedbackId"
+                           class="btn btn-info btn-sm">
+                            Details
+                        </a>
+
+                        @if (role == "Admin")
+                        {
+                            <a asp-action="Edit"
+                               asp-route-id="@item.FeedbackId"
+                               class="btn btn-warning btn-sm">
+                                Edit
+                            </a>
+
+                           <form asp-action="Delete"
+                                  asp-route-id="@item.FeedbackId"
+                                  method="post"
+                                  style="display:inline;">
+
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this feedback?');">
+                                    Delete
+                                </button>
+
+                            </form>
+                        }
+                    </td>
+                </tr>
+            }
+        }
+        else
+        {
+            <tr>
+                <td colspan="6" class="text-center">
+                    No feedback records found.
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

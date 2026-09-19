@@ -1,0 +1,103 @@
+﻿@model EduTek.Web.Models.CreateAttendanceViewModel
+
+@{
+    ViewData["Title"] = "Mark Attendance";
+}
+
+<h2>Mark Attendance</h2>
+
+<form asp-controller="Attendance"
+      asp-action="Create"
+      method="post">
+
+    <div class="mb-3">
+        <label asp-for="TeacherId" class="form-label">
+            Teacher ID
+        </label>
+
+        <input asp-for="TeacherId"
+               class="form-control" />
+
+        <span asp-validation-for="TeacherId"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="StudentId" class="form-label">
+            Student ID
+        </label>
+
+        <input asp-for="StudentId"
+               class="form-control" />
+
+        <span asp-validation-for="StudentId"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SubjectId" class="form-label">
+            Subject ID
+        </label>
+
+        <input asp-for="SubjectId"
+               class="form-control" />
+
+        <span asp-validation-for="SubjectId"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ClassId" class="form-label">
+            Class ID
+        </label>
+
+        <input asp-for="ClassId"
+               class="form-control" />
+
+        <span asp-validation-for="ClassId"
+              class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="AttendanceDate"
+               class="form-label">
+            Attendance Date
+        </label>
+
+        <input asp-for="AttendanceDate"
+               type="date"
+               class="form-control" />
+
+        <span asp-validation-for="AttendanceDate"
+              class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsPresent"
+               class="form-check-input" />
+
+        <label asp-for="IsPresent"
+               class="form-check-label">
+            Present
+        </label>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Mark Attendance
+    </button>
+
+    <a asp-controller="Attendance"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,56 @@
+﻿@model EduTek.Web.Models.EditAttendanceViewModel
+
+@{
+    ViewData["Title"] = "Edit Attendance";
+}
+
+<h2>Edit Attendance</h2>
+
+<form asp-controller="Attendance"
+      asp-action="Edit"
+      method="post">
+
+    <input type="hidden" asp-for="AttendanceId" />
+
+    <div class="mb-3">
+        <label asp-for="AttendanceDate" class="form-label">
+            Attendance Date
+        </label>
+
+        <input asp-for="AttendanceDate"
+               type="date"
+               class="form-control" />
+
+        <span asp-validation-for="AttendanceDate"
+              class="text-danger"></span>
+    </div>
+
+    <div class="form-check mb-3">
+        <input asp-for="IsPresent"
+               class="form-check-input" />
+
+        <label asp-for="IsPresent"
+               class="form-check-label">
+            Present
+        </label>
+    </div>
+
+    <button type="submit"
+            class="btn btn-warning">
+        Update
+    </button>
+
+    <a asp-controller="Attendance"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync(
+            "_ValidationScriptsPartial");
+    }
+}

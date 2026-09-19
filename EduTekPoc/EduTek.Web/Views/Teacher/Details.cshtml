@@ -1,0 +1,66 @@
+﻿@model EduTek.Web.Models.TeacherViewModel
+
+@{
+    ViewData["Title"] = "Teacher Details";
+}
+
+<h2>Teacher Details</h2>
+
+<div>
+    <dl class="row">
+
+        <dt class="col-sm-3">
+            Teacher ID
+        </dt>
+        <dd class="col-sm-9">
+            @Model.TeacherId
+        </dd>
+
+        <dt class="col-sm-3">
+            First Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.FirstName
+        </dd>
+
+        <dt class="col-sm-3">
+            Last Name
+        </dt>
+        <dd class="col-sm-9">
+            @Model.LastName
+        </dd>
+
+        <dt class="col-sm-3">
+            Email
+        </dt>
+        <dd class="col-sm-9">
+            @Model.Email
+        </dd>
+
+        <dt class="col-sm-3">
+            Phone Number
+        </dt>
+        <dd class="col-sm-9">
+            @Model.PhoneNumber
+        </dd>
+
+    </dl>
+</div>
+
+<div>
+    <a asp-controller="Teacher"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to List
+    </a>
+
+    @if (Context.Session.GetString("Role") == "Admin")
+    {
+        <a asp-controller="Teacher"
+           asp-action="Edit"
+           asp-route-id="@Model.TeacherId"
+           class="btn btn-warning">
+            Edit
+        </a>
+    }
+</div>

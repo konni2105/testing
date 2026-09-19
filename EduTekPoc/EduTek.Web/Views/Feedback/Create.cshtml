@@ -1,0 +1,97 @@
+﻿@model EduTek.Web.Models.CreateFeedbackViewModel
+
+@{
+    ViewData["Title"] = "Create Feedback";
+}
+
+<h1>Create Feedback</h1>
+
+<hr />
+
+<div class="row">
+    <div class="col-md-6">
+
+        <form asp-action="Create" method="post">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="text-danger">
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="TeacherId" class="control-label">
+                    Teacher ID
+                </label>
+
+                <input asp-for="TeacherId"
+                       class="form-control"
+                       type="number" />
+
+                <span asp-validation-for="TeacherId"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="StudentId" class="control-label">
+                    Student ID
+                </label>
+
+                <input asp-for="StudentId"
+                       class="form-control"
+                       type="number" />
+
+                <span asp-validation-for="StudentId"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="Comments" class="control-label">
+                    Comments
+                </label>
+
+                <textarea asp-for="Comments"
+                          class="form-control"
+                          rows="5"
+                          maxlength="1000"></textarea>
+
+                <span asp-validation-for="Comments"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="FeedbackDate" class="control-label">
+                    Feedback Date
+                </label>
+
+                <input asp-for="FeedbackDate"
+                       class="form-control"
+                       type="date" />
+
+                <span asp-validation-for="FeedbackDate"
+                      class="text-danger">
+                </span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit"
+                       value="Create"
+                       class="btn btn-primary" />
+
+                <a asp-action="Index"
+                   class="btn btn-secondary">
+                    Back to List
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
