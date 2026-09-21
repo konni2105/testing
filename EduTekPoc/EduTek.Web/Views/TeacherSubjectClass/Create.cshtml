@@ -1,0 +1,73 @@
+﻿@model EduTek.Web.Models.CreateTeacherSubjectClassViewModel
+
+@{
+    ViewData["Title"] = "Assign Teacher";
+}
+
+<h1>Assign Teacher to Subject and Class</h1>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">
+        @ViewBag.Error
+    </div>
+}
+
+<form asp-action="Create" method="post">
+
+    <div class="mb-3">
+        <label asp-for="TeacherId" class="form-label">
+            Teacher ID
+        </label>
+
+        <input asp-for="TeacherId"
+               class="form-control" />
+
+        <span asp-validation-for="TeacherId"
+              class="text-danger">
+        </span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SubjectId" class="form-label">
+            Subject ID
+        </label>
+
+        <input asp-for="SubjectId"
+               class="form-control" />
+
+        <span asp-validation-for="SubjectId"
+              class="text-danger">
+        </span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="ClassId" class="form-label">
+            Class ID
+        </label>
+
+        <input asp-for="ClassId"
+               class="form-control" />
+
+        <span asp-validation-for="ClassId"
+              class="text-danger">
+        </span>
+    </div>
+
+    <button type="submit"
+            class="btn btn-primary">
+        Assign
+    </button>
+
+    <a asp-action="Index"
+       class="btn btn-secondary">
+        Cancel
+    </a>
+
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

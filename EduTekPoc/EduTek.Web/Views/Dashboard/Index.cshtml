@@ -1,45 +1,374 @@
-﻿@{
+﻿@model EduTek.Web.Models.DashboardViewModel
+
+@{
     ViewData["Title"] = "Dashboard";
-
-    var username = ViewBag.Username;
-    var role = ViewBag.Role;
 }
 
-<h1>Dashboard</h1>
+<div class="container mt-4">
 
-<h3>Welcome, @username</h3>
+    <h1>Dashboard</h1>
 
-@if (role == "Admin")
-{
-    <h4>Admin Dashboard</h4>
+    <h2>Welcome, @Model.Username</h2>
 
-    <p>You can manage all the existing things and other application data.</p>
+    <p class="lead">
+        @Model.Role Dashboard
+    </p>
 
-    <a asp-controller="Student" asp-action="Index">
-        Manage Students
-    </a>
-}
-else if (role == "Teacher")
-{
-    <h4>Teacher Dashboard</h4>
 
-    <p>You can view student information and perform teacher-related operations.</p>
+    <!-- SUMMARY CARDS -->
 
-    <a asp-controller="Student" asp-action="Index">
-        View Students
-    </a>
-}
-else if (role == "Student")
-{
-    <h4>Student Dashboard</h4>
 
-    <p>You can view your available student information.</p>
+    <div class="row">
 
-    <a asp-controller="Student" asp-action="Index">
-        View Students
-    </a>
-}
-else
-{
-    <p>Role not recognized.</p>
-}
+        <!-- Students -->
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-primary h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Students
+                    </h5>
+
+                    <h2 class="card-text">
+                        @Model.StudentCount
+                    </h2>
+
+                    @if (Model.Role.Equals(
+                        "Admin",
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        <a asp-controller="Student"
+                           asp-action="Index"
+                           class="btn btn-light">
+                            Manage Students
+                        </a>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Teachers -->
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-success h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Teachers
+                    </h5>
+
+                    <h2 class="card-text">
+                        @Model.TeacherCount
+                    </h2>
+
+                    @if (Model.Role.Equals(
+                        "Admin",
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        <a asp-controller="Teacher"
+                           asp-action="Index"
+                           class="btn btn-light">
+                            Manage Teachers
+                        </a>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Subjects -->
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-warning h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Subjects
+                    </h5>
+
+                    <h2 class="card-text">
+                        @Model.SubjectCount
+                    </h2>
+
+                    @if (Model.Role.Equals(
+                        "Admin",
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        <a asp-controller="Subject"
+                           asp-action="Index"
+                           class="btn btn-light">
+                            Manage Subjects
+                        </a>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Classes -->
+        <div class="col-md-3 mb-4">
+            <div class="card text-white bg-info h-100">
+                <div class="card-body">
+
+                    <h5 class="card-title">
+                        Classes
+                    </h5>
+
+                    <h2 class="card-text">
+                        @Model.ClassCount
+                    </h2>
+
+                    @if (Model.Role.Equals(
+                        "Admin",
+                        StringComparison.OrdinalIgnoreCase))
+                    {
+                        <a asp-controller="Class"
+                           asp-action="Index"
+                           class="btn btn-light">
+                            Manage Classes
+                        </a>
+                    }
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+
+
+    <!-- ADMIN DASHBOARD -->
+ 
+
+    @if (Model.Role.Equals(
+        "Admin",
+        StringComparison.OrdinalIgnoreCase))
+    {
+        <hr />
+
+        <h3 class="mb-3">
+            Admin Quick Actions
+        </h3>
+
+        <div class="row">
+
+            <!-- Attendance -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Attendance"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Attendance
+                </a>
+            </div>
+
+            <!-- Exams -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Exam"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Exams
+                </a>
+            </div>
+
+            <!-- Marks -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Mark"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Marks
+                </a>
+            </div>
+
+            <!-- Feedback -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Feedback"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Feedback
+                </a>
+            </div>
+
+            <!-- Class Subjects -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="ClassSubject"
+                   asp-action="Index"
+                   class="btn btn-outline-success w-100">
+                    Class Subjects
+                </a>
+            </div>
+
+            <!-- Teacher Assignments -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="TeacherSubjectClass"
+                   asp-action="Index"
+                   class="btn btn-outline-success w-100">
+                    Teacher Assignments
+                </a>
+            </div>
+
+        </div>
+
+
+        <!-- Pending Registrations -->
+
+        <h3 class="mb-3 mt-4">
+            Admin Actions
+        </h3>
+
+        <div class="row">
+
+            <div class="col-md-3 mb-4">
+
+                <div class="card text-white bg-danger h-100">
+
+                    <div class="card-body">
+
+                        <h5 class="card-title">
+                            Pending Registrations
+                        </h5>
+
+                        <h2 class="card-text">
+                            @Model.PendingRegistrationCount
+                        </h2>
+
+                        <a asp-controller="Admin"
+                           asp-action="PendingRegistrations"
+                           class="btn btn-light">
+                            Review Registrations
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    }
+
+
+ 
+    <!-- TEACHER DASHBOARD -->
+
+
+    @if (Model.Role.Equals(
+        "Teacher",
+        StringComparison.OrdinalIgnoreCase))
+    {
+        <hr />
+
+        <h3 class="mb-3">
+            Teacher Quick Actions
+        </h3>
+
+        <div class="row">
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Attendance"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Attendance
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Exam"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Exams
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Mark"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Marks
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Feedback"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Feedback
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="ClassSubject"
+                   asp-action="Index"
+                   class="btn btn-outline-success w-100">
+                    Class Subjects
+                </a>
+            </div>
+
+            <div class="col-md-3 mb-3">
+                <a asp-controller="TeacherSubjectClass"
+                   asp-action="Index"
+                   class="btn btn-outline-success w-100">
+                    Teacher Assignments
+                </a>
+            </div>
+
+        </div>
+    }
+
+
+    <!-- STUDENT DASHBOARD -->
+
+
+    @if (Model.Role.Equals(
+        "Student",
+        StringComparison.OrdinalIgnoreCase))
+    {
+        <hr />
+
+        <h3 class="mb-3">
+            Student Quick Actions
+        </h3>
+
+        <div class="row">
+
+            <!-- My Attendance -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Attendance"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    My Attendance
+                </a>
+            </div>
+
+            <!-- My Exams -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Exam"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    My Exams
+                </a>
+            </div>
+
+            <!-- My Marks -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Mark"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    My Marks
+                </a>
+            </div>
+
+            <!-- Feedback -->
+            <div class="col-md-3 mb-3">
+                <a asp-controller="Feedback"
+                   asp-action="Index"
+                   class="btn btn-outline-primary w-100">
+                    Feedback
+                </a>
+            </div>
+
+        </div>
+    }
+
+</div>

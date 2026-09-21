@@ -7,5 +7,7 @@
         Task<string> PutAsync(string endpoint, object data);
 
         Task<string> DeleteAsync(string endpoint);
+
+        Task<string> RefreshTokenAsync(string refreshToken);
     }
 }

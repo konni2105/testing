@@ -46,6 +46,8 @@ namespace EduTek.Web.Controllers
 
             await _apiService.PostAsync("api/Student", model);
 
+            TempData["Success"] = "Student created successfully.";
+
             return RedirectToAction(nameof(Index));
         }
 

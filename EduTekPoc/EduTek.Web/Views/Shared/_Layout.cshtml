@@ -29,6 +29,17 @@
                     </ul>
 
                     <ul class="navbar-nav">
+                           @if (Context.Session.GetString("AccessToken") != null)
+                                    {
+                                        <li class="nav-item">
+                                            <a class="nav-link text-danger"
+                                               asp-controller="Auth"
+                                               asp-action="Logout">
+                                                Logout
+                                            </a>
+                                        </li>
+                                    }
+
                         @if (Context.Session.GetString("Username") != null)
                         {
                             <li class="nav-item">

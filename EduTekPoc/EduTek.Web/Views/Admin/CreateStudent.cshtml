@@ -1,0 +1,63 @@
+﻿@model EduTek.Web.Models.CreateStudentViewModel
+
+@{
+    ViewData["Title"] = "Create Student Profile";
+}
+
+<div class="container mt-4">
+
+    <h2>Create Student Profile</h2>
+
+    <p>
+        <strong>Username:</strong> @ViewBag.Username
+    </p>
+
+    <form asp-action="CreateStudent" method="post">
+
+        <input type="hidden" name="userId" value="@ViewBag.UserId" />
+
+        <div class="mb-3">
+            <label asp-for="FirstName" class="form-label"></label>
+            <input asp-for="FirstName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="LastName" class="form-label"></label>
+            <input asp-for="LastName" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label"></label>
+           <input asp-for="Email" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="PhoneNumber" class="form-label"></label>
+            <input asp-for="PhoneNumber" class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="DateOfBirth" class="form-label"></label>
+            <input asp-for="DateOfBirth"
+                   type="date"
+                   class="form-control" />
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="ClassId" class="form-label">Class ID</label>
+            <input asp-for="ClassId"
+                   type="number"
+                   class="form-control" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Create Student
+        </button>
+
+        <a asp-action="PendingRegistrations"
+           class="btn btn-secondary">
+            Back
+        </a>
+
+    </form>
+</div>

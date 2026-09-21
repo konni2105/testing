@@ -7,13 +7,23 @@
 
 <h1>Students</h1>
 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["Success"]
+    </div>
+}
+
 @if (role == "Admin")
 {
     <a asp-controller="Student"
-       asp-action="Create">
+       asp-action="Create"
+        class="btn btn-primary mb-3">
         Create Student
     </a>
 }
+
+
 
 @if (Model != null && Model.Count > 0)
 {
@@ -44,33 +54,35 @@
                     <td>@student.DateOfBirth.ToString("dd-MM-yyyy")</td>
                     <td>@student.ClassId</td>
                     <td>
-                        <a asp-controller="Student"
+                      <a asp-controller="Student"
                            asp-action="Details"
-                           asp-route-id="@student.StudentId">
+                           asp-route-id="@student.StudentId"
+                           class="btn btn-info btn-sm">
                             Details
                         </a>
                         @if (role == "Admin")
                         {
                             <span> | </span>
-                            <a asp-controller="Student"
-                               asp-action="Edit"
-                               asp-route-id="@student.StudentId">
-                                Edit
-                            </a>
+                       <a asp-controller="Student"
+                           asp-action="Edit"
+                           asp-route-id="@student.StudentId"
+                           class="btn btn-warning btn-sm">
+                            Edit
+                        </a>
                         
                             <span> | </span>
 
-                            <form asp-controller="Student"
+                             <form asp-controller="Student"
                                   asp-action="Delete"
                                   asp-route-id="@student.StudentId"
                                   method="post"
                                   style="display:inline;">
 
-                                <button type="submit">
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm">
                                     Delete
                                 </button>
-
-                            </form>
+                              </form>
                         }
                     </td>
                 </tr>

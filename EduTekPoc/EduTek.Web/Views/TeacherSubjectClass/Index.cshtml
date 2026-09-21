@@ -1,0 +1,75 @@
+﻿@model List<EduTek.Web.Models.TeacherSubjectClassViewModel>
+
+@{
+    ViewData["Title"] = "Teacher Subject Class";
+}
+
+<h1>Teacher Subject Class</h1>
+
+<p>
+    <a asp-action="Create" class="btn btn-primary">
+        Assign Teacher
+    </a>
+</p>
+
+@if (Model != null && Model.Count > 0)
+{
+    <table class="table table-bordered">
+
+        <thead>
+            <tr>
+                <th>Teacher ID</th>
+                <th>Teacher Name</th>
+                <th>Subject ID</th>
+                <th>Subject Name</th>
+                <th>Class ID</th>
+                <th>Class Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.TeacherId</td>
+                    <td>@item.TeacherName</td>
+                    <td>@item.SubjectId</td>
+                    <td>@item.SubjectName</td>
+                    <td>@item.ClassId</td>
+                    <td>@item.ClassName</td>
+
+                    <td>
+                        <form asp-action="Delete"
+                              method="post"
+                              style="display:inline;">
+
+                            <input type="hidden"
+                                   name="teacherId"
+                                   value="@item.TeacherId" />
+
+                            <input type="hidden"
+                                   name="subjectId"
+                                   value="@item.SubjectId" />
+
+                            <input type="hidden"
+                                   name="classId"
+                                   value="@item.ClassId" />
+
+                            <button type="submit"
+                                    class="btn btn-danger">
+                                Delete
+                            </button>
+
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+}
+else
+{
+    <p>No teacher-subject-class relationships found.</p>
+}

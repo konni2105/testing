@@ -4,48 +4,50 @@
     ViewData["Title"] = "Student Details";
 }
 
-<h1>Student Details</h1>
+<div class="container mt-4">
 
-<div>
-    <p>
-        <strong>Student ID:</strong>
-        @Model.StudentId
-    </p>
+    <h2>Student Details</h2>
 
-    <p>
-        <strong>First Name:</strong>
-        @Model.FirstName
-    </p>
+    <hr />
 
-    <p>
-        <strong>Last Name:</strong>
-        @Model.LastName
-    </p>
+    <dl class="row">
 
-    <p>
-        <strong>Email:</strong>
-        @Model.Email
-    </p>
+        <dt class="col-sm-3">Student ID</dt>
+        <dd class="col-sm-9">@Model.StudentId</dd>
 
-    <p>
-        <strong>Phone Number:</strong>
-        @Model.PhoneNumber
-    </p>
+        <dt class="col-sm-3">First Name</dt>
+        <dd class="col-sm-9">@Model.FirstName</dd>
 
-    <p>
-        <strong>Date of Birth:</strong>
-        @Model.DateOfBirth.ToString("dd-MM-yyyy")
-    </p>
+        <dt class="col-sm-3">Last Name</dt>
+        <dd class="col-sm-9">@Model.LastName</dd>
 
-    <p>
-        <strong>Class ID:</strong>
-        @Model.ClassId
-    </p>
+        <dt class="col-sm-3">Email</dt>
+        <dd class="col-sm-9">@Model.Email</dd>
+
+        <dt class="col-sm-3">Phone Number</dt>
+        <dd class="col-sm-9">@Model.PhoneNumber</dd>
+
+        <dt class="col-sm-3">Date of Birth</dt>
+        <dd class="col-sm-9">
+            @Model.DateOfBirth.ToString("dd-MM-yyyy")
+        </dd>
+
+        <dt class="col-sm-3">Class ID</dt>
+        <dd class="col-sm-9">@Model.ClassId</dd>
+
+    </dl>
+
+    <a asp-controller="Student"
+       asp-action="Edit"
+       asp-route-id="@Model.StudentId"
+       class="btn btn-warning">
+        Edit
+    </a>
+
+    <a asp-controller="Student"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to Students
+    </a>
+
 </div>
-
-<br />
-
-<a asp-controller="Student"
-   asp-action="Index">
-    Back to Students
-</a>

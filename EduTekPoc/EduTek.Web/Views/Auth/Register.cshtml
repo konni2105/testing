@@ -1,0 +1,98 @@
+﻿@model EduTek.Web.Models.RegisterViewModel
+
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="container mt-4">
+
+    <h1>Register</h1>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger">
+            @ViewBag.Error
+        </div>
+    }
+
+    @if (ViewBag.Success != null)
+    {
+        <div class="alert alert-success">
+            @ViewBag.Success
+        </div>
+    }
+
+    <form asp-action="Register" method="post">
+
+        <div class="mb-3">
+            <label asp-for="Username" class="form-label">
+                Username
+            </label>
+
+            <input asp-for="Username" class="form-control" />
+
+            <span asp-validation-for="Username"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Email" class="form-label">
+                Email
+            </label>
+
+            <input asp-for="Email" class="form-control" />
+
+            <span asp-validation-for="Email"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="Password" class="form-label">
+                Password
+            </label>
+
+            <input asp-for="Password"
+                   type="password"
+                   class="form-control" />
+
+            <span asp-validation-for="Password"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <div class="mb-3">
+            <label asp-for="RoleId" class="form-label">
+                Role
+            </label>
+
+            <select asp-for="RoleId" class="form-select">
+                <option value="">-- Select Role --</option>
+                <option value="2">Student</option>
+                <option value="3">Teacher</option>
+            </select>
+
+            <span asp-validation-for="RoleId"
+                  class="text-danger">
+            </span>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+            Register
+        </button>
+
+        <a asp-action="Login"
+           class="btn btn-secondary">
+            Back to Login
+        </a>
+
+    </form>
+
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

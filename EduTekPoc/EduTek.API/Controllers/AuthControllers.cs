@@ -74,10 +74,28 @@ namespace EduTek.API.Controllers
             return Ok(tokenResponse);
         }
 
-     
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken(
+    [FromBody] RefreshTokenRequestDto dto)
+        {
+            var response =
+                await _authService.RefreshTokenAsync(dto.RefreshToken);
+
+            if (response == null)
+            {
+                return Unauthorized(new
+                {
+                    message = "Invalid or expired refresh token."
+                });
+            }
+
+            return Ok(response);
+        }
 
 
 
-        
+
+
+
     }
 }

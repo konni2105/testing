@@ -1,0 +1,161 @@
+﻿@model List<EduTek.Web.Models.PendingUserViewModel>
+
+@{
+    ViewData["Title"] = "Pending Registrations";
+}
+
+<div class="container mt-4">
+
+    <h1>Pending Registrations</h1>
+
+    <p class="lead">
+        Review users waiting for admin approval.
+    </p>
+
+    <hr />
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success">
+            @TempData["Success"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (Model != null && Model.Count > 0)
+    {
+        <table class="table table-bordered table-striped">
+
+            <thead>
+                <tr>
+                    <th>User ID</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Created At</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+
+            <tbody>
+
+                @foreach (var user in Model)
+                {
+                    <tr>
+
+                        <td>
+                            @user.UserId
+                        </td>
+
+                        <td>
+                            @user.Username
+                        </td>
+
+                        <td>
+                            @user.Email
+                        </td>
+
+                        <td>
+                            @user.Role
+                        </td>
+
+                        <td>
+                            @user.CreatedAt
+                        </td>
+
+                        <td>
+
+                            <!-- APPROVE -->
+                            <form asp-action="Approve"
+                                  method="post"
+                                  style="display:inline;">
+
+                                <input type="hidden"
+                                       name="userId"
+                                       value="@user.UserId" />
+
+                                <input type="hidden"
+                                       name="isApproved"
+                                       value="true" />
+
+                                <input type="hidden"
+                                       name="username"
+                                       value="@user.Username" />
+
+                                <input type="hidden"
+                                       name="email"
+                                       value="@user.Email" />
+
+                                <input type="hidden"
+                                       name="roleId"
+                                       value="@user.RoleId" />
+
+                                <button type="submit"
+                                        class="btn btn-success btn-sm">
+                                    Approve
+                                </button>
+
+                            </form>
+
+
+                            <!-- REJECT -->
+                            <form asp-action="Approve"
+                                  method="post"
+                                  style="display:inline;">
+
+                                <input type="hidden"
+                                       name="userId"
+                                       value="@user.UserId" />
+
+                                <input type="hidden"
+                                       name="isApproved"
+                                       value="false" />
+
+                                <input type="hidden"
+                                       name="username"
+                                       value="@user.Username" />
+
+                                <input type="hidden"
+                                       name="email"
+                                       value="@user.Email" />
+
+                                <input type="hidden"
+                                       name="roleId"
+                                       value="@user.RoleId" />
+
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm">
+                                    Reject
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+                }
+
+            </tbody>
+
+        </table>
+    }
+    else
+    {
+        <div class="alert alert-info">
+            No pending registrations found.
+        </div>
+    }
+
+    <a asp-controller="Dashboard"
+       asp-action="Index"
+       class="btn btn-secondary">
+        Back to Dashboard
+    </a>
+
+</div>

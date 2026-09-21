@@ -113,6 +113,32 @@ namespace EduTek.Web.Services
             return $"{(int)response.StatusCode} - {responseContent}";
         }
 
+        public async Task<string> RefreshTokenAsync(string refreshToken)
+        {
+            var client = _httpClientFactory.CreateClient("EduTekAPI");
+
+            var data = new
+            {
+                RefreshToken = refreshToken
+            };
+
+            var json = JsonSerializer.Serialize(data);
+
+            var content = new StringContent(
+                json,
+                Encoding.UTF8,
+                "application/json");
+
+            var response = await client.PostAsync(
+                "api/Auth/refresh-token",
+                content);
+
+            response.EnsureSuccessStatusCode();
+
+            return await response.Content.ReadAsStringAsync();
+        }
+
+
 
 
     }
