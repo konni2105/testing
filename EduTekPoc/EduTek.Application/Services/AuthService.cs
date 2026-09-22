@@ -158,23 +158,35 @@ namespace EduTek.Application.Services
 
         private AuthResponseDto GenerateJwtToken(string username, string role)
         {
-            var jwtSecret = _configuration["Jwt:SecretKey"] ?? "EduTekSuperSecretKey1234567890ABC";
-            var issuer = _configuration["Jwt:Issuer"] ?? "EduTekAPI";
-            var audience = _configuration["Jwt:Audience"] ?? "EduTekClient";
-            var expirationMinutes = int.Parse(_configuration["Jwt:DurationInMinutes"] ?? "60");
+            var jwtSecret = _configuration["Jwt:SecretKey"]
+                ?? "EduTekSuperSecretKey1234567890ABC";
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSecret));
-            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var issuer = _configuration["Jwt:Issuer"]
+                ?? "EduTekAPI";
+
+            var audience = _configuration["Jwt:Audience"]
+                ?? "EduTekClient";
+
+            var expirationMinutes =
+                int.Parse(_configuration["Jwt:DurationInMinutes"] ?? "30");
+
+            var key = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(jwtSecret));
+
+            var credentials = new SigningCredentials(
+                key,
+                SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, username),
-                new Claim(ClaimTypes.Role, role)
-            };
+        new Claim(JwtRegisteredClaimNames.Sub, username),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.Name, username),
+        new Claim(ClaimTypes.Role, role)
+    };
 
-            var expiration = DateTime.UtcNow.AddMinutes(expirationMinutes);
+            var expiration =
+                DateTime.UtcNow.AddMinutes(expirationMinutes);
 
             var token = new JwtSecurityToken(
                 issuer: issuer,
@@ -183,7 +195,8 @@ namespace EduTek.Application.Services
                 expires: expiration,
                 signingCredentials: credentials);
 
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(token);
+            var tokenString =
+                new JwtSecurityTokenHandler().WriteToken(token);
 
             return new AuthResponseDto
             {
@@ -193,6 +206,7 @@ namespace EduTek.Application.Services
                 Expiration = expiration
             };
         }
+
 
         private static UserDto MapToDto(User user)
         {

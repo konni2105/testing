@@ -1,33 +1,59 @@
 ﻿using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace EduTek.Application.Services
 {
     public class SubjectService : ISubjectService
     {
         private readonly ISubjectRepository _repository;
+        private readonly IMemoryCache _cache;
 
         public SubjectService(
-            ISubjectRepository repository)
+      ISubjectRepository subjectRepository,
+      IMemoryCache cache)
         {
-            _repository = repository;
+            _repository = subjectRepository;
+            _cache = cache;
         }
 
         // GET ALL
         public async Task<List<SubjectDto>> GetAllAsync()
         {
-            var subjects =
-                await _repository.GetAllAsync();
+            const string cacheKey = "subjects";
 
-            return subjects.Select(s => new SubjectDto
+            List<SubjectDto> subjects;
+
+            if (_cache.TryGetValue(
+                cacheKey,
+                out List<SubjectDto>? cachedSubjects))
             {
-                SubjectId = s.SubjectId,
-                SubjectName = s.SubjectName,
-                Description = s.Description
-            }).ToList();
-        }
+                Console.WriteLine("DATA CAME FROM CACHE");
 
+                subjects = cachedSubjects!;
+            }
+            else
+            {
+                Console.WriteLine("DATA CAME FROM DATABASE");
+
+                var result = await _repository.GetAllAsync();
+
+                subjects = result.Select(s => new SubjectDto
+                {
+                    SubjectId = s.SubjectId,
+                    SubjectName = s.SubjectName,
+                    Description = s.Description
+                }).ToList();
+
+                _cache.Set(
+                    cacheKey,
+                    subjects,
+                    TimeSpan.FromMinutes(5));
+            }
+
+            return subjects;
+        }
         // GET BY ID
         public async Task<SubjectDto?> GetByIdAsync(int id)
         {
@@ -67,6 +93,8 @@ namespace EduTek.Application.Services
             var createdSubject =
                 await _repository.AddAsync(subject);
 
+            _cache.Remove("subjects");
+
             return new SubjectDto
             {
                 SubjectId = createdSubject.SubjectId,
@@ -103,9 +131,17 @@ namespace EduTek.Application.Services
                 
             };
 
-            return await _repository.UpdateAsync(
+           var result= await _repository.UpdateAsync(
                 id,
                 subject);
+
+
+            if (result)
+            {
+                _cache.Remove("subjects");
+            }
+
+            return result;
         }
 
         // DELETE
@@ -147,7 +183,14 @@ namespace EduTek.Application.Services
                     "Cannot delete subject because exam records exist.");
             }
 
-            return await _repository.DeleteAsync(id);
+            var result = await _repository.DeleteAsync(id);
+
+if (result)
+{
+    _cache.Remove("subjects");
+}
+
+return result;
         }
     }
 }
