@@ -1,7 +1,8 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 
 namespace EduTek.Application.Services
 {
@@ -9,13 +10,16 @@ namespace EduTek.Application.Services
     {
         private readonly ISubjectRepository _repository;
         private readonly IMemoryCache _cache;
+        private readonly ILogger<SubjectService> _logger;
 
         public SubjectService(
       ISubjectRepository subjectRepository,
-      IMemoryCache cache)
+      IMemoryCache cache,
+      ILogger<SubjectService> logger)
         {
             _repository = subjectRepository;
             _cache = cache;
+            _logger = logger;
         }
 
         // GET ALL
@@ -29,14 +33,12 @@ namespace EduTek.Application.Services
                 cacheKey,
                 out List<SubjectDto>? cachedSubjects))
             {
-                Console.WriteLine("DATA CAME FROM CACHE");
-
+                _logger.LogInformation("Subject GET cache HIT");
                 subjects = cachedSubjects!;
             }
             else
             {
-                Console.WriteLine("DATA CAME FROM DATABASE");
-
+                _logger.LogInformation("Subject GET cache MISS");
                 var result = await _repository.GetAllAsync();
 
                 subjects = result.Select(s => new SubjectDto
@@ -80,7 +82,7 @@ namespace EduTek.Application.Services
                     dto.SubjectName);
 
             if (nameExists)
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Subject name already exists.");
 
             var subject = new Subject
@@ -121,7 +123,7 @@ namespace EduTek.Application.Services
                         id);
 
             if (nameExists)
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Subject name already exists.");
 
             var subject = new Subject
@@ -159,7 +161,7 @@ namespace EduTek.Application.Services
 
             if (hasClassAssignments)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete subject because it is assigned to a class.");
             }
 
@@ -169,7 +171,7 @@ namespace EduTek.Application.Services
 
             if (hasTeacherAssignments)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete subject because teacher assignments exist.");
             }
 
@@ -179,7 +181,7 @@ namespace EduTek.Application.Services
 
             if (hasExamRecords)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete subject because exam records exist.");
             }
 

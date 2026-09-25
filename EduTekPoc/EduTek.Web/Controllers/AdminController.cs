@@ -1,10 +1,12 @@
-﻿using EduTek.Web.Models;
+﻿using EduTek.Web.Filters;
+using EduTek.Web.Models;
 using EduTek.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace EduTek.Web.Controllers
 {
+    [SessionAuthorize("Admin")]
     public class AdminController : Controller
     {
         private readonly IApiService _apiService;
@@ -39,7 +41,7 @@ namespace EduTek.Web.Controllers
                  bool isApproved,
                  string username,
                  string email,
-                 int roleId)
+                 string role)
                     {
             var dto = new
             {
@@ -53,7 +55,7 @@ namespace EduTek.Web.Controllers
                     "api/Admin/approve",
                     dto);
 
-                if (isApproved && roleId == 2)
+                if (isApproved && role.Equals("Student", StringComparison.OrdinalIgnoreCase))
                 {
                     return RedirectToAction(
                         nameof(CreateStudent),

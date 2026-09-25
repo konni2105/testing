@@ -16,7 +16,7 @@ namespace EduTek.Infrastructure.Models
         // public string Role { get; set; } = "User"; // Admin, Teacher, Student, User
 
         [ForeignKey("RoleId")]
-        public Role Role { get; set; } 
+        public Role? Role { get; set; } 
 
         public  int RoleId { get; set; } 
 

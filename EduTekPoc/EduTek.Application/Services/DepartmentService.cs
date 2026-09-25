@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -48,7 +48,7 @@ namespace EduTek.Application.Services
         public async Task<DepartmentDto> AddAsync(
             CreateDepartmentDto dto)
         {
-            // DTO → Entity
+            // DTO ? Entity
             var department = new Department
             {
                 DepartmentName = dto.DepartmentName,
@@ -58,7 +58,7 @@ namespace EduTek.Application.Services
             var createdDepartment =
                 await _departmentRepository.AddAsync(department);
 
-            // Entity → DTO
+            // Entity ? DTO
             return new DepartmentDto
             {
                 DepartmentId = createdDepartment.DepartmentId,
@@ -71,7 +71,7 @@ namespace EduTek.Application.Services
             int id,
             UpdateDepartmentDto dto)
         {
-            // DTO → Entity
+            // DTO ? Entity
             var department = new Department
             {
                 DepartmentName = dto.DepartmentName,

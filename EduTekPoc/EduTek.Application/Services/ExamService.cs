@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -76,7 +76,7 @@ namespace EduTek.Application.Services
 
             if (subject == null)
             {
-                throw new Exception("Subject not found.");
+                throw new InvalidOperationException("Subject not found.");
             }
 
             // 2. Check Class exists
@@ -86,7 +86,7 @@ namespace EduTek.Application.Services
 
             if (classEntity == null)
             {
-                throw new Exception("Class not found.");
+                throw new InvalidOperationException("Class not found.");
             }
 
             // 3. Check Subject is assigned to Class
@@ -97,7 +97,7 @@ namespace EduTek.Application.Services
 
             if (!subjectAssigned)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Subject is not assigned to this class.");
             }
 
@@ -110,11 +110,11 @@ namespace EduTek.Application.Services
 
             if (examExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "An exam already exists for this subject, class, and date.");
             }
 
-            // 5. DTO → Entity
+            // 5. DTO ? Entity
             var exam = new Exam
             {
                 ExamName = dto.ExamName,
@@ -127,7 +127,7 @@ namespace EduTek.Application.Services
             var created =
                 await _repository.AddAsync(exam);
 
-            // 7. Entity → DTO
+            // 7. Entity ? DTO
             return new ExamDto
             {
                 ExamId = created.ExamId,

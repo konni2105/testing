@@ -1,33 +1,39 @@
-﻿@model EduTek.Web.Models.ClassViewModel
+@model EduTek.Web.Models.ClassViewModel
 
 @{
     ViewData["Title"] = "Class Details";
+    var role = Context.Session.GetString("Role");
 }
 
-<h1>Class Details</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Class Details</h1>
 
-<div>
+                <dl class="row mb-4">
+                    <dt class="col-sm-4 text-muted">Class ID</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.ClassId</dd>
 
-    <p>
-        <strong>Class ID:</strong>
-        @Model.ClassId
-    </p>
+                    <dt class="col-sm-4 text-muted">Class Name</dt>
+                    <dd class="col-sm-8">@Model.ClassName</dd>
 
-    <p>
-        <strong>Class Name:</strong>
-        @Model.ClassName
-    </p>
+                    <dt class="col-sm-4 text-muted">Description</dt>
+                    <dd class="col-sm-8">@Model.Description</dd>
+                </dl>
 
-    <p>
-        <strong>Description:</strong>
-        @Model.Description
-    </p>
-
+                <div class="d-flex gap-2">
+                    <a asp-controller="Class" asp-action="Index" class="btn btn-secondary">
+                        Back to List
+                    </a>
+                    @if (role == "Admin")
+                    {
+                        <a asp-controller="Class" asp-action="Edit" asp-route-id="@Model.ClassId" class="btn btn-warning">
+                            Edit
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<br />
-
-<a asp-controller="Class"
-   asp-action="Index">
-    Back to List
-</a>

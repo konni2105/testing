@@ -6,4 +6,5 @@ public interface IAuthService
     Task<UserDto?> ValidateCredentialsAsync(LoginDto dto);
     Task<AuthResponseDto?> LoginAsync(LoginDto dto);
     Task<AuthResponseDto?> RefreshTokenAsync(string refreshToken);
+    Task<bool> RevokeRefreshTokenAsync(string refreshToken);
 }

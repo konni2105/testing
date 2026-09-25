@@ -19,17 +19,19 @@ namespace EduTek.Web.Controllers
             _apiService = apiService;
         }
 
-
-        // GET: /Auth/Login
         [HttpGet]
         public IActionResult Login()
         {
+            if (!string.IsNullOrEmpty(HttpContext.Session.GetString("AccessToken")))
+            {
+                return RedirectToAction("Index", "Dashboard");
+            }
+
             return View();
         }
 
-
-        // POST: /Auth/Login
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
             if (!ModelState.IsValid)
@@ -37,154 +39,103 @@ namespace EduTek.Web.Controllers
                 return View(model);
             }
 
-            var client =
-                _httpClientFactory.CreateClient("EduTekAPI");
+            var client = _httpClientFactory.CreateClient("EduTekAPI");
 
-            var json =
-                JsonSerializer.Serialize(model);
-
-            var content = new StringContent(
-                json,
-                Encoding.UTF8,
-                "application/json");
-
-            var response = await client.PostAsync(
-                "api/Auth/login",
-                content);
+            var json = JsonSerializer.Serialize(model);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("api/Auth/login", content);
 
             if (!response.IsSuccessStatusCode)
             {
-                ViewBag.Error =
-                    "Invalid username or password.";
-
+                ModelState.AddModelError(string.Empty, "Invalid username or password.");
                 return View(model);
             }
 
-            var responseContent =
-                await response.Content.ReadAsStringAsync();
+            var responseContent = await response.Content.ReadAsStringAsync();
+            var authResponse = JsonSerializer.Deserialize<AuthResponseModel>(
+                responseContent,
+                new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            var authResponse =
-                JsonSerializer.Deserialize<AuthResponseModel>(
-                    responseContent,
-                    new JsonSerializerOptions
-                    {
-                        PropertyNameCaseInsensitive = true
-                    });
-
-            if (authResponse == null)
+            if (authResponse == null || string.IsNullOrEmpty(authResponse.Token))
             {
-                ViewBag.Error =
-                    "Invalid response received from API.";
-
+                ModelState.AddModelError(string.Empty, "Invalid response received from API.");
                 return View(model);
             }
 
-            // Store authentication information in Session
-            HttpContext.Session.SetString(
-                "AccessToken",
-                authResponse.Token);
+            HttpContext.Session.SetString("AccessToken", authResponse.Token);
+            HttpContext.Session.SetString("RefreshToken", authResponse.RefreshToken);
+            HttpContext.Session.SetString("Username", authResponse.Username);
+            HttpContext.Session.SetString("Role", authResponse.Role);
 
-            HttpContext.Session.SetString(
-                "RefreshToken",
-                authResponse.RefreshToken);
-
-            HttpContext.Session.SetString(
-                "Username",
-                authResponse.Username);
-
-            HttpContext.Session.SetString(
-                "Role",
-                authResponse.Role);
-
-            ViewBag.Username = authResponse.Username;
-            ViewBag.Role = authResponse.Role;
-            ViewBag.Expiration = authResponse.Expiration;
-
-            return View(model);
+            return RedirectToAction("Index", "Dashboard");
         }
 
-
-        // GET: /Auth/Register
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
-
-        // POST: /Auth/Register
         [HttpPost]
-        public async Task<IActionResult> Register(
-            RegisterViewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterViewModel model)
         {
             if (!ModelState.IsValid)
             {
                 return View(model);
             }
 
-            var client =
-                _httpClientFactory.CreateClient("EduTekAPI");
-
-            var json =
-                JsonSerializer.Serialize(model);
-
-            var content = new StringContent(
-                json,
-                Encoding.UTF8,
-                "application/json");
-
-            var response = await client.PostAsync(
-                "api/Auth/register",
-                content);
+            var client = _httpClientFactory.CreateClient("EduTekAPI");
+            var json = JsonSerializer.Serialize(model);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("api/Auth/register", content);
 
             if (!response.IsSuccessStatusCode)
             {
-                ViewBag.Error =
-                    await response.Content.ReadAsStringAsync();
-
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
                 return View(model);
             }
 
-            ViewBag.Success =
-                "Registration successful. Please wait for Admin approval.";
-
+            ViewBag.Success = "Registration successful. Please wait for Admin approval.";
             ModelState.Clear();
-
             return View();
         }
 
-
-        // POST: /Auth/RefreshToken
+        [HttpGet]
         [HttpPost]
         public async Task<IActionResult> RefreshToken()
         {
-            var refreshToken =
-                HttpContext.Session.GetString("RefreshToken");
+            var refreshToken = HttpContext.Session.GetString("RefreshToken");
 
             if (string.IsNullOrEmpty(refreshToken))
             {
                 return Unauthorized();
             }
 
-            var response =
-                await _apiService.RefreshTokenAsync(
-                    refreshToken);
-
-            return Content(
-                response,
-                "application/json");
+            var response = await _apiService.RefreshTokenAsync(refreshToken);
+            return Content(response, "application/json");
         }
 
-
-        // GET: /Auth/Logout
         [HttpGet]
-        public IActionResult Logout()
+        [HttpPost]
+        public async Task<IActionResult> Logout()
         {
-            HttpContext.Session.Clear();
+            var refreshToken = HttpContext.Session.GetString("RefreshToken");
 
-            return RedirectToAction(
-                "Login",
-                "Auth");
+            if (!string.IsNullOrEmpty(refreshToken))
+            {
+                try
+                {
+                    await _apiService.LogoutAsync(refreshToken);
+                }
+                catch (Exception)
+                {
+                    // Session is still cleared even if API revocation fails.
+                }
+            }
+
+            HttpContext.Session.Clear();
+            return RedirectToAction("Login", "Auth");
         }
     }
 }

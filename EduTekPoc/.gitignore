@@ -1,0 +1,54 @@
+﻿## ----- .NET / MSBuild -----
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+
+## ----- NuGet -----
+*.nupkg
+*.snupkg
+.nuget/
+
+## ----- Visual Studio -----
+.vs/
+*.vspx
+*.opensdf
+*.sdf
+
+## ----- Rider / JetBrains -----
+.idea/
+*.DotSettings.user
+
+## ----- Test results -----
+TestResults/
+*.trx
+coverage.xml
+*.coveragexml
+*.coverage
+*.opencover.xml
+.codecoverage/
+
+## ----- Publish outputs -----
+publish/
+**/publish/
+*.publish.xml
+
+## ----- Entity Framework local db -----
+*.mdf
+*.ldf
+*.ndf
+
+## ----- User secrets -----
+**/secrets.json
+
+## ----- OS files -----
+.DS_Store
+Thumbs.db
+desktop.ini
+
+## ----- Logs -----
+*.log
+logs/

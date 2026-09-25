@@ -9,5 +9,7 @@
         Task<string> DeleteAsync(string endpoint);
 
         Task<string> RefreshTokenAsync(string refreshToken);
+
+        Task LogoutAsync(string refreshToken);
     }
 }

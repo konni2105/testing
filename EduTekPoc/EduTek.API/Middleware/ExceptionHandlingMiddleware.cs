@@ -23,19 +23,47 @@ namespace EduTek.API.Middleware
             }
             catch (Exception ex)
             {
-                _logger.LogError(
-                    ex,
-                    "An unhandled exception occurred.");
-
-                context.Response.StatusCode = 500;
-                context.Response.ContentType = "application/json";
-
-                await context.Response.WriteAsJsonAsync(new
-                {
-                    statusCode = 500,
-                    message = "An unexpected error occurred."
-                });
+                await HandleExceptionAsync(context, ex);
             }
+        }
+
+        private async Task HandleExceptionAsync(HttpContext context, Exception ex)
+        {
+            var traceId = context.TraceIdentifier;
+
+            var (statusCode, message) = ex switch
+            {
+                InvalidOperationException => (StatusCodes.Status400BadRequest, ex.Message),
+                UnauthorizedAccessException => (StatusCodes.Status401Unauthorized, "Authentication is required."),
+                KeyNotFoundException => (StatusCodes.Status404NotFound, ex.Message),
+                ArgumentException => (StatusCodes.Status400BadRequest, ex.Message),
+                _ => (StatusCodes.Status500InternalServerError, "An unexpected error occurred.")
+            };
+
+            if (statusCode == StatusCodes.Status500InternalServerError)
+            {
+                _logger.LogError(ex, "Unhandled exception. TraceId: {TraceId}", traceId);
+            }
+            else
+            {
+                _logger.LogWarning(ex, "Handled exception ({StatusCode}). TraceId: {TraceId}", statusCode, traceId);
+            }
+
+            if (context.Response.HasStarted)
+            {
+                return;
+            }
+
+            context.Response.Clear();
+            context.Response.StatusCode = statusCode;
+            context.Response.ContentType = "application/json";
+
+            await context.Response.WriteAsJsonAsync(new
+            {
+                statusCode,
+                message,
+                traceId
+            });
         }
     }
 }

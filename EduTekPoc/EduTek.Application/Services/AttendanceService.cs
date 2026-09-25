@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -72,7 +72,7 @@ namespace EduTek.Application.Services
 
             if (student == null)
             {
-                throw new Exception("Student not found.");
+                throw new InvalidOperationException("Student not found.");
             }
 
             // 2. Check Subject exists
@@ -82,7 +82,7 @@ namespace EduTek.Application.Services
 
             if (subject == null)
             {
-                throw new Exception("Subject not found.");
+                throw new InvalidOperationException("Subject not found.");
             }
 
             // 3. Check Student belongs to Class
@@ -93,7 +93,7 @@ namespace EduTek.Application.Services
 
             if (!studentInClass)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Student does not belong to the specified class.");
             }
 
@@ -106,7 +106,7 @@ namespace EduTek.Application.Services
 
             if (!teacherAssigned)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Teacher is not assigned to this subject and class.");
             }
 
@@ -119,11 +119,11 @@ namespace EduTek.Application.Services
 
             if (attendanceExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Attendance already exists for this student, subject, and date.");
             }
 
-            // DTO → Entity
+            // DTO ? Entity
             var attendance = new Attendance
             {
                 StudentId = dto.StudentId,
@@ -135,7 +135,7 @@ namespace EduTek.Application.Services
             var created =
                 await _repository.AddAsync(attendance);
 
-            // Entity → DTO
+            // Entity ? DTO
             return new AttendanceDto
             {
                 AttendanceId = created.AttendanceId,

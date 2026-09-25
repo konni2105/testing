@@ -17,7 +17,7 @@ namespace EduTek.API.Controllers
         }
 
         // GET: api/Student
-        [Authorize(Roles = "Admin,Teacher, Student")]
+        [Authorize(Roles = "Admin,Teacher,Student")]
         [HttpGet]
         public async Task<IActionResult> GetStudents()
         {

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<EduTek.Web.Models.FeedbackViewModel>
+@model IEnumerable<EduTek.Web.Models.FeedbackViewModel>
 
 @{
     ViewData["Title"] = "Feedback";
@@ -45,25 +45,26 @@
                             Details
                         </a>
 
-                        @if (role == "Admin")
+                        @if (role == "Admin" || role == "Teacher")
                         {
                             <a asp-action="Edit"
                                asp-route-id="@item.FeedbackId"
                                class="btn btn-warning btn-sm">
                                 Edit
                             </a>
+                        }
 
-                           <form asp-action="Delete"
+                        @if (role == "Admin")
+                        {
+                            <form asp-action="Delete"
                                   asp-route-id="@item.FeedbackId"
                                   method="post"
                                   style="display:inline;">
-
                                 <button type="submit"
                                         class="btn btn-danger btn-sm"
                                         onclick="return confirm('Are you sure you want to delete this feedback?');">
                                     Delete
                                 </button>
-
                             </form>
                         }
                     </td>

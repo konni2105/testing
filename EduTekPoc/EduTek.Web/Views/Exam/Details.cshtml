@@ -1,4 +1,4 @@
-﻿@model EduTek.Web.Models.ExamViewModel
+@model EduTek.Web.Models.ExamViewModel
 
 @{
     ViewData["Title"] = "Exam Details";
@@ -6,79 +6,50 @@
 
 <h2>Exam Details</h2>
 
-<div>
-    <dl class="row">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Exam Details</h1>
 
-        <dt class="col-sm-3">
-            Exam ID
-        </dt>
-        <dd class="col-sm-9">
-            @Model.ExamId
-        </dd>
+                <dl class="row mb-4">
+                    <dt class="col-sm-4 text-muted">Exam ID</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.ExamId</dd>
 
-        <dt class="col-sm-3">
-            Exam Name
-        </dt>
-        <dd class="col-sm-9">
-            @Model.ExamName
-        </dd>
+                    <dt class="col-sm-4 text-muted">Exam Name</dt>
+                    <dd class="col-sm-8">@Model.ExamName</dd>
 
-        <dt class="col-sm-3">
-            Subject ID
-        </dt>
-        <dd class="col-sm-9">
-            @Model.SubjectId
-        </dd>
+                    <dt class="col-sm-4 text-muted">Subject ID</dt>
+                    <dd class="col-sm-8">@Model.SubjectId</dd>
 
-        <dt class="col-sm-3">
-            Subject Name
-        </dt>
-        <dd class="col-sm-9">
-            @Model.SubjectName
-        </dd>
+                    <dt class="col-sm-4 text-muted">Subject Name</dt>
+                    <dd class="col-sm-8">@Model.SubjectName</dd>
 
-        <dt class="col-sm-3">
-            Class ID
-        </dt>
-        <dd class="col-sm-9">
-            @Model.ClassId
-        </dd>
+                    <dt class="col-sm-4 text-muted">Class ID</dt>
+                    <dd class="col-sm-8">@Model.ClassId</dd>
 
-        <dt class="col-sm-3">
-            Class Name
-        </dt>
-        <dd class="col-sm-9">
-            @Model.ClassName
-        </dd>
+                    <dt class="col-sm-4 text-muted">Class Name</dt>
+                    <dd class="col-sm-8">@Model.ClassName</dd>
 
-        <dt class="col-sm-3">
-            Exam Date
-        </dt>
-        <dd class="col-sm-9">
-            @Model.ExamDate.ToString("dd-MM-yyyy")
-        </dd>
+                    <dt class="col-sm-4 text-muted">Exam Date</dt>
+                    <dd class="col-sm-8">@Model.ExamDate.ToString("dd-MM-yyyy")</dd>
+                </dl>
 
-    </dl>
-</div>
-
-<div>
-    <a asp-controller="Exam"
-       asp-action="Index"
-       class="btn btn-secondary">
-        Back to List
-    </a>
-
-    @{
-        var role = Context.Session.GetString("Role");
-    }
-
-    @if (role == "Admin")
-    {
-        <a asp-controller="Exam"
-           asp-action="Edit"
-           asp-route-id="@Model.ExamId"
-           class="btn btn-warning">
-            Edit
-        </a>
-    }
+                <div class="d-flex gap-2">
+                    <a asp-controller="Exam" asp-action="Index" class="btn btn-secondary">
+                        Back to List
+                    </a>
+                    @{
+                        var role = Context.Session.GetString("Role");
+                    }
+                    @if (role == "Admin" || role == "Teacher")
+                    {
+                        <a asp-controller="Exam" asp-action="Edit" asp-route-id="@Model.ExamId" class="btn btn-warning">
+                            Edit
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

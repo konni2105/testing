@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -22,7 +22,8 @@ namespace EduTek.Application.Services
                 UserId = u.UserId,
                 Username = u.Username,
                 Email = u.Email,
-                Role = u.Role.Name
+                Role = u.Role?.Name ?? string.Empty,
+                RoleId = u.RoleId
             }).ToList();
         }
 

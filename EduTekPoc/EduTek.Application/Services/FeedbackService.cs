@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -81,7 +81,7 @@ namespace EduTek.Application.Services
 
             if (student == null)
             {
-                throw new Exception("Student not found.");
+                throw new InvalidOperationException("Student not found.");
             }
 
             //checks teacher exists 
@@ -90,7 +90,7 @@ namespace EduTek.Application.Services
 
             if (teacher == null)
             {
-                throw new Exception("Teacher not found.");
+                throw new InvalidOperationException("Teacher not found.");
             }
 
             // 2. Check Teacher is assigned to student's class
@@ -102,11 +102,11 @@ namespace EduTek.Application.Services
 
             if (!teacherAssigned)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Teacher is not assigned to this student's class.");
             }
 
-            // 3. DTO → Entity
+            // 3. DTO ? Entity
             var feedback = new Feedback
             {
                 TeacherId = dto.TeacherId,
@@ -119,7 +119,7 @@ namespace EduTek.Application.Services
             var created =
                 await _repository.AddAsync(feedback);
 
-            // 5. Entity → DTO
+            // 5. Entity ? DTO
             return new FeedbackDto
             {
                 FeedbackId = created.FeedbackId,

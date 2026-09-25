@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -63,16 +63,16 @@ namespace EduTek.Application.Services
                 await _classRepository.GetByIdAsync(dto.ClassId);
 
             if (classEntity == null)
-                throw new Exception("Class not found.");
+                throw new InvalidOperationException("Class not found.");
 
             // Check duplicate email
             var emailExists =
                 await _repository.EmailExistsAsync(dto.Email);
 
             if (emailExists)
-                throw new Exception("Email already exists.");
+                throw new InvalidOperationException("Email already exists.");
 
-            // DTO → Entity
+            // DTO ? Entity
             var student = new Student
             {
                 FirstName = dto.FirstName,
@@ -87,7 +87,7 @@ namespace EduTek.Application.Services
             var createdStudent =
                 await _repository.AddAsync(student);
 
-            // Entity → DTO
+            // Entity ? DTO
             return new StudentDto
             {
                 StudentId = createdStudent.StudentId,
@@ -117,7 +117,7 @@ namespace EduTek.Application.Services
                 await _classRepository.GetByIdAsync(dto.ClassId);
 
             if (classEntity == null)
-                throw new Exception("Class not found.");
+                throw new InvalidOperationException("Class not found.");
 
             // Check email belongs to another student
             var emailExists =
@@ -126,9 +126,9 @@ namespace EduTek.Application.Services
                     id);
 
             if (emailExists)
-                throw new Exception("Email already exists.");
+                throw new InvalidOperationException("Email already exists.");
 
-            // DTO → Entity
+            // DTO ? Entity
             var student = new Student
             {
                 FirstName = dto.FirstName,
@@ -158,7 +158,7 @@ namespace EduTek.Application.Services
 
             if (hasAttendance)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete student - Attendance records exist. Deactivate instead.");
             }
 

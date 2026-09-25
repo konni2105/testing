@@ -1,21 +1,24 @@
-﻿@model List<EduTek.Web.Models.TeacherSubjectClassViewModel>
+@model List<EduTek.Web.Models.TeacherSubjectClassViewModel>
 
 @{
     ViewData["Title"] = "Teacher Subject Class";
+    var role = Context.Session.GetString("Role");
+    var isAdmin = string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase);
 }
 
-<h1>Teacher Subject Class</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        Assign Teacher
-    </a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Teacher Assignments</h1>
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            Assign Teacher
+        </a>
+    }
+</div>
 
 @if (Model != null && Model.Count > 0)
 {
-    <table class="table table-bordered">
-
+    <table class="table table-bordered table-striped table-hover align-middle">
         <thead>
             <tr>
                 <th>Teacher ID</th>
@@ -24,7 +27,10 @@
                 <th>Subject Name</th>
                 <th>Class ID</th>
                 <th>Class Name</th>
-                <th>Action</th>
+                @if (isAdmin)
+                {
+                    <th>Action</th>
+                }
             </tr>
         </thead>
 
@@ -38,38 +44,38 @@
                     <td>@item.SubjectName</td>
                     <td>@item.ClassId</td>
                     <td>@item.ClassName</td>
+                    @if (isAdmin)
+                    {
+                        <td>
+                            <form asp-action="Delete"
+                                  method="post"
+                                  style="display:inline;">
+                                <input type="hidden"
+                                       name="teacherId"
+                                       value="@item.TeacherId" />
 
-                    <td>
-                        <form asp-action="Delete"
-                              method="post"
-                              style="display:inline;">
+                                <input type="hidden"
+                                       name="subjectId"
+                                       value="@item.SubjectId" />
 
-                            <input type="hidden"
-                                   name="teacherId"
-                                   value="@item.TeacherId" />
+                                <input type="hidden"
+                                       name="classId"
+                                       value="@item.ClassId" />
 
-                            <input type="hidden"
-                                   name="subjectId"
-                                   value="@item.SubjectId" />
-
-                            <input type="hidden"
-                                   name="classId"
-                                   value="@item.ClassId" />
-
-                            <button type="submit"
-                                    class="btn btn-danger">
-                                Delete
-                            </button>
-
-                        </form>
-                    </td>
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to remove this teacher assignment?');">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
-
     </table>
 }
 else
 {
-    <p>No teacher-subject-class relationships found.</p>
+    <div class="alert alert-info">No teacher assignments found.</div>
 }

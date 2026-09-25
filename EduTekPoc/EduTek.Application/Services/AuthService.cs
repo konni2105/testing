@@ -30,6 +30,12 @@ namespace EduTek.Application.Services
 
         public async Task<UserDto> RegisterAsync(RegisterDto dto)
         {
+            if (dto.RoleId != 2 && dto.RoleId != 3)
+            {
+                throw new InvalidOperationException(
+                    "Public registration is limited to Teacher or Student roles.");
+            }
+
             if (await _userRepository.ExistsByUsernameAsync(dto.Username))
             {
                 throw new InvalidOperationException(
@@ -145,6 +151,26 @@ namespace EduTek.Application.Services
             return tokenResponse;
         }
 
+        public async Task<bool> RevokeRefreshTokenAsync(string refreshToken)
+        {
+            if (string.IsNullOrWhiteSpace(refreshToken))
+            {
+                return false;
+            }
+
+            var user = await _userRepository.GetByRefreshTokenAsync(refreshToken);
+
+            if (user == null)
+            {
+                return false;
+            }
+
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = null;
+
+            return await _userRepository.UpdateAsync(user);
+        }
+
         private string GenerateRefreshToken()
         {
             var randomBytes = new byte[64];
@@ -159,13 +185,13 @@ namespace EduTek.Application.Services
         private AuthResponseDto GenerateJwtToken(string username, string role)
         {
             var jwtSecret = _configuration["Jwt:SecretKey"]
-                ?? "EduTekSuperSecretKey1234567890ABC";
+                ?? throw new InvalidOperationException("Jwt:SecretKey is not configured.");
 
             var issuer = _configuration["Jwt:Issuer"]
-                ?? "EduTekAPI";
+                ?? throw new InvalidOperationException("Jwt:Issuer is not configured.");
 
             var audience = _configuration["Jwt:Audience"]
-                ?? "EduTekClient";
+                ?? throw new InvalidOperationException("Jwt:Audience is not configured.");
 
             var expirationMinutes =
                 int.Parse(_configuration["Jwt:DurationInMinutes"] ?? "30");

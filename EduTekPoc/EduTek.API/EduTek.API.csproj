@@ -17,9 +17,14 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="10.2.3" />
   </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\EduTek.Application\EduTek.Application.csproj" />
-    <ProjectReference Include="..\EduTek.Infrastructure\EduTek.Infrastructure.csproj" />
-  </ItemGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\EduTek.Application\EduTek.Application.csproj" />
+      <ProjectReference Include="..\EduTek.Infrastructure\EduTek.Infrastructure.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <InternalsVisibleTo Include="EduTek.API.Tests" />
+    </ItemGroup>
+
 
 </Project>

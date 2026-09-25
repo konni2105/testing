@@ -102,6 +102,16 @@ namespace EduTek.Web.Services
             return await response.Content.ReadAsStringAsync();
         }
 
+        public async Task LogoutAsync(string refreshToken)
+        {
+            var client = _httpClientFactory.CreateClient("EduTekAPI");
+
+            var json = JsonSerializer.Serialize(new { RefreshToken = refreshToken });
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await client.PostAsync("api/Auth/logout", content);
+            response.EnsureSuccessStatusCode();
+        }
+
         // Common method for GET / POST / PUT / DELETE
         private async Task<HttpResponseMessage> ExecuteWithRefreshAsync(
     Func<HttpClient, Task<HttpResponseMessage>> action)

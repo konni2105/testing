@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -62,13 +62,13 @@ namespace EduTek.Application.Services
                 await _classRepository.GetByIdAsync(dto.ClassId);
 
             if (classEntity == null)
-                throw new Exception("Class not found.");
+                throw new InvalidOperationException("Class not found.");
 
             var subject =
                 await _subjectRepository.GetByIdAsync(dto.SubjectId);
 
             if (subject == null)
-                throw new Exception("Subject not found.");
+                throw new InvalidOperationException("Subject not found.");
 
             var exists =
                 await _repository.ExistsAsync(
@@ -76,7 +76,7 @@ namespace EduTek.Application.Services
                     dto.SubjectId);
 
             if (exists)
-                throw new Exception(
+                throw new InvalidOperationException(
                     "This subject is already assigned to this class.");
 
             var classSubject = new ClassSubject

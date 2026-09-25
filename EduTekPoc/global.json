@@ -1,0 +1,7 @@
+{
+  "version": "1.0.0",
+  "isRoot": true,
+  "tools": {
+    "dotnet": "10.0.401"
+  }
+}

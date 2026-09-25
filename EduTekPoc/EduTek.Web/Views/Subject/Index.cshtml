@@ -1,27 +1,23 @@
-﻿@model List<EduTek.Web.Models.SubjectViewModel>
+@model List<EduTek.Web.Models.SubjectViewModel>
 
 @{
     ViewData["Title"] = "Subjects";
     var role = Context.Session.GetString("Role");
 }
 
-<h1>Subjects</h1>
-
-@if (role == "Admin")
-{
-    <a asp-controller="Subject"
-       asp-action="Create">
-        Create Subject
-    </a>
-}
-
-<br />
-<br />
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Subjects</h1>
+    @if (role == "Admin")
+    {
+        <a asp-controller="Subject" asp-action="Create" class="btn btn-primary">
+            Create Subject
+        </a>
+    }
+</div>
 
 @if (Model != null && Model.Count > 0)
 {
-    <table class="table table-bordered">
-
+    <table class="table table-bordered table-striped table-hover align-middle">
         <thead>
             <tr>
                 <th>Subject ID</th>
@@ -30,7 +26,6 @@
                 <th>Actions</th>
             </tr>
         </thead>
-
         <tbody>
             @foreach (var subject in Model)
             {
@@ -38,46 +33,42 @@
                     <td>@subject.SubjectId</td>
                     <td>@subject.SubjectName</td>
                     <td>@subject.Description</td>
-
                     <td>
                         <a asp-controller="Subject"
                            asp-action="Details"
-                           asp-route-id="@subject.SubjectId">
+                           asp-route-id="@subject.SubjectId"
+                           class="btn btn-info btn-sm">
                             Details
                         </a>
 
                         @if (role == "Admin")
                         {
-                            <span> | </span>
-
                             <a asp-controller="Subject"
                                asp-action="Edit"
-                               asp-route-id="@subject.SubjectId">
+                               asp-route-id="@subject.SubjectId"
+                               class="btn btn-warning btn-sm">
                                 Edit
                             </a>
-
-                            <span> | </span>
 
                             <form asp-controller="Subject"
                                   asp-action="Delete"
                                   asp-route-id="@subject.SubjectId"
                                   method="post"
                                   style="display:inline;">
-
-                                <button type="submit">
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to delete this subject?');">
                                     Delete
                                 </button>
-
                             </form>
                         }
                     </td>
                 </tr>
             }
         </tbody>
-
     </table>
 }
 else
 {
-    <p>No subjects found.</p>
+    <div class="alert alert-info">No subjects found.</div>
 }

@@ -8,7 +8,7 @@
 
 <h2>Exams</h2>
 
-@if (role == "Admin")
+@if (role == "Admin" || role == "Teacher")
 {
     <p>
         <a asp-controller="Exam"
@@ -19,7 +19,7 @@
     </p>
 }
 
-<table class="table">
+<table class="table table-bordered table-striped table-hover align-middle">
     <thead>
         <tr>
             <th>Exam ID</th>
@@ -61,7 +61,7 @@
                             Details
                         </a>
 
-                        @if (role == "Admin")
+                        @if (role == "Admin" || role == "Teacher")
                         {
                             <a asp-controller="Exam"
                                asp-action="Edit"

@@ -3,78 +3,125 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EduTek.Web</title>
-    <script type="importmap"></script>
+    <title>@ViewData["Title"] - EduTek</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EduTek.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
+    @{
+        var isAuthenticated = Context.Session.GetString("AccessToken") != null;
+        var role = Context.Session.GetString("Role");
+        var username = Context.Session.GetString("Username");
+        var isAdmin = string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase);
+        var isTeacher = string.Equals(role, "Teacher", StringComparison.OrdinalIgnoreCase);
+        var isStudent = string.Equals(role, "Student", StringComparison.OrdinalIgnoreCase);
+    }
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">EduTek.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-lg navbar-dark edutek-navbar">
+            <div class="container">
+                <a class="navbar-brand fw-semibold" asp-controller="Home" asp-action="Index">EduTek</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar"
+                        aria-controls="mainNavbar" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                <div class="collapse navbar-collapse" id="mainNavbar">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-
-                    <ul class="navbar-nav">
-                           @if (Context.Session.GetString("AccessToken") != null)
-                                    {
-                                        <li class="nav-item">
-                                            <a class="nav-link text-danger"
-                                               asp-controller="Auth"
-                                               asp-action="Logout">
-                                                Logout
-                                            </a>
-                                        </li>
-                                    }
-
-                        @if (Context.Session.GetString("Username") != null)
+                        @if (isAuthenticated)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-dark">
-                                    Welcome, @Context.Session.GetString("Username")
-                                    (@Context.Session.GetString("Role"))
-                                </span>
+                                <a class="nav-link" asp-controller="Dashboard" asp-action="Index">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Attendance" asp-action="Index">Attendance</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Exam" asp-action="Index">Exams</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Mark" asp-action="Index">Marks</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Feedback" asp-action="Index">Feedback</a>
+                            </li>
+                            @if (isAdmin)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Admin</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="Admin" asp-action="PendingRegistrations">Pending Registrations</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Department" asp-action="Index">Departments</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Subject" asp-action="Index">Subjects</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Class" asp-action="Index">Classes</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Teacher" asp-action="Index">Teachers</a></li>
+                                        <li><a class="dropdown-item" asp-controller="Student" asp-action="Index">Students</a></li>
+                                        <li><hr class="dropdown-divider" /></li>
+                                        <li><a class="dropdown-item" asp-controller="ClassSubject" asp-action="Index">Class Subjects</a></li>
+                                        <li><a class="dropdown-item" asp-controller="TeacherSubjectClass" asp-action="Index">Teacher Assignments</a></li>
+                                    </ul>
+                                </li>
+                            }
+                            @if (isTeacher)
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">Teaching</a>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" asp-controller="TeacherSubjectClass" asp-action="Index">Assigned Classes</a></li>
+                                        <li><a class="dropdown-item" asp-controller="ClassSubject" asp-action="Index">Class Subjects</a></li>
+                                    </ul>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (isAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <span class="navbar-text me-3">@username (@role)</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Auth" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Auth" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Auth" asp-action="Register">Register</a>
                             </li>
                         }
                     </ul>
-
-                    @if (Context.Session.GetString("Username") != null)
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark"
-                               asp-controller="Dashboard"
-                               asp-action="Index">
-                                Dashboard
-                            </a>
-                        </li>
-                    }
-
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+    <div class="container py-4">
+        <main role="main">
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["Success"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    @TempData["Error"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
+    <footer class="footer border-top text-muted py-3">
         <div class="container">
-            &copy; 2026 - EduTek.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; 2026 EduTek - Academic Management
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>

@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -74,7 +74,7 @@ namespace EduTek.Application.Services
 
             if (exam == null)
             {
-                throw new Exception("Exam not found.");
+                throw new InvalidOperationException("Exam not found.");
             }
 
             // 2. Check Student exists
@@ -84,13 +84,13 @@ namespace EduTek.Application.Services
 
             if (student == null)
             {
-                throw new Exception("Student not found.");
+                throw new InvalidOperationException("Student not found.");
             }
 
             // 3. Check Student belongs to Exam's class
             if (exam.ClassId != student.ClassId)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Student does not belong to the class for this exam.");
             }
 
@@ -102,11 +102,11 @@ namespace EduTek.Application.Services
 
             if (markExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "A mark already exists for this student and exam.");
             }
 
-            // 5. DTO → Entity
+            // 5. DTO ? Entity
             var mark = new Mark
             {
                 ExamId = dto.ExamId,
@@ -118,7 +118,7 @@ namespace EduTek.Application.Services
             var created =
                 await _repository.AddAsync(mark);
 
-            // 7. Entity → DTO
+            // 7. Entity ? DTO
             return new MarkDto
             {
                 MarkId = created.MarkId,

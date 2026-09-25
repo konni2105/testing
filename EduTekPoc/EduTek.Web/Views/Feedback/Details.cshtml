@@ -1,4 +1,4 @@
-﻿@model EduTek.Web.Models.FeedbackViewModel
+@model EduTek.Web.Models.FeedbackViewModel
 
 @{
     ViewData["Title"] = "Feedback Details";
@@ -7,59 +7,41 @@
 
 <h1>Feedback Details</h1>
 
-<div>
-    <dl class="row">
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Feedback Details</h1>
 
-        <dt class="col-sm-3">
-            Feedback ID
-        </dt>
-        <dd class="col-sm-9">
-            @Model.FeedbackId
-        </dd>
+                <dl class="row mb-4">
+                    <dt class="col-sm-4 text-muted">Feedback ID</dt>
+                    <dd class="col-sm-8 fw-semibold">@Model.FeedbackId</dd>
 
-        <dt class="col-sm-3">
-            Teacher
-        </dt>
-        <dd class="col-sm-9">
-            @Model.TeacherName
-        </dd>
+                    <dt class="col-sm-4 text-muted">Teacher</dt>
+                    <dd class="col-sm-8">@Model.TeacherName</dd>
 
-        <dt class="col-sm-3">
-            Student
-        </dt>
-        <dd class="col-sm-9">
-            @Model.StudentName
-        </dd>
+                    <dt class="col-sm-4 text-muted">Student</dt>
+                    <dd class="col-sm-8">@Model.StudentName</dd>
 
-        <dt class="col-sm-3">
-            Comments
-        </dt>
-        <dd class="col-sm-9">
-            @Model.Comments
-        </dd>
+                    <dt class="col-sm-4 text-muted">Comments</dt>
+                    <dd class="col-sm-8">@Model.Comments</dd>
 
-        <dt class="col-sm-3">
-            Feedback Date
-        </dt>
-        <dd class="col-sm-9">
-            @Model.FeedbackDate.ToString("dd-MM-yyyy")
-        </dd>
+                    <dt class="col-sm-4 text-muted">Feedback Date</dt>
+                    <dd class="col-sm-8">@Model.FeedbackDate.ToString("dd-MM-yyyy")</dd>
+                </dl>
 
-    </dl>
-</div>
-
-<div>
-    @if (role == "Admin")
-    {
-        <a asp-action="Edit"
-           asp-route-id="@Model.FeedbackId"
-           class="btn btn-warning">
-            Edit
-        </a>
-    }
-
-    <a asp-action="Index"
-       class="btn btn-secondary">
-        Back to List
-    </a>
+                <div class="d-flex gap-2">
+                    <a asp-action="Index" class="btn btn-secondary">
+                        Back to List
+                    </a>
+                    @if (role == "Admin" || role == "Teacher")
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model.FeedbackId" class="btn btn-warning">
+                            Edit
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

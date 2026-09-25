@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -60,11 +60,11 @@ namespace EduTek.Application.Services
 
             if (emailExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Email already exists.");
             }
 
-            // DTO → Entity
+            // DTO ? Entity
             var teacher = new Teacher
             {
                 FirstName = dto.FirstName,
@@ -77,7 +77,7 @@ namespace EduTek.Application.Services
             var createdTeacher =
                 await _teacherRepository.AddAsync(teacher);
 
-            // Entity → DTO
+            // Entity ? DTO
             return new TeacherDto
             {
                 TeacherId = createdTeacher.TeacherId,
@@ -109,11 +109,11 @@ namespace EduTek.Application.Services
 
             if (emailExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Email already exists.");
             }
 
-            // DTO → Entity
+            // DTO ? Entity
             var teacher = new Teacher
             {
                 TeacherId = id,
@@ -145,7 +145,7 @@ namespace EduTek.Application.Services
 
             if (hasAssignments)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete teacher - subject/class assignments exist. Deactivate instead.");
             }
 

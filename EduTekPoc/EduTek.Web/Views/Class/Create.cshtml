@@ -1,42 +1,46 @@
-﻿@model EduTek.Web.Models.CreateClassViewModel
+@model EduTek.Web.Models.CreateClassViewModel
 
 @{
     ViewData["Title"] = "Create Class";
 }
 
-<h1>Create Class</h1>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-4">
+                <h1 class="h3 mb-3">Create Class</h1>
 
-<form asp-controller="Class"
-      asp-action="Create"
-      method="post">
+                <form asp-controller="Class" asp-action="Create" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
-    <div>
-        <label asp-for="ClassName"></label>
+                    <div class="mb-3">
+                        <label asp-for="ClassName" class="form-label"></label>
+                        <input asp-for="ClassName" class="form-control" />
+                        <span asp-validation-for="ClassName" class="text-danger"></span>
+                    </div>
 
-        <input asp-for="ClassName" />
+                    <div class="mb-3">
+                        <label asp-for="Description" class="form-label"></label>
+                        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
 
-        <span asp-validation-for="ClassName"></span>
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary">
+                            Create Class
+                        </button>
+                        <a asp-controller="Class" asp-action="Index" class="btn btn-secondary">
+                            Back to List
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
+</div>
 
-    <br />
-
-    <div>
-        <label asp-for="Description"></label>
-
-        <textarea asp-for="Description"></textarea>
-
-        <span asp-validation-for="Description"></span>
-    </div>
-
-    <br />
-
-    <button type="submit">
-        Create Class
-    </button>
-
-    <a asp-controller="Class"
-       asp-action="Index">
-        Back to List
-    </a>
-
-</form>
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

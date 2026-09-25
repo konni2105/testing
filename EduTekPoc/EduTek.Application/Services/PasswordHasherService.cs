@@ -15,8 +15,12 @@ namespace EduTek.Application.Services
             var salt = new byte[SaltSize];
             rng.GetBytes(salt);
 
-            using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256);
-            var key = pbkdf2.GetBytes(KeySize);
+            var key = Rfc2898DeriveBytes.Pbkdf2(
+                password,
+                salt,
+                Iterations,
+                HashAlgorithmName.SHA256,
+                KeySize);
 
             var hashBytes = new byte[SaltSize + KeySize];
             Array.Copy(salt, 0, hashBytes, 0, SaltSize);
@@ -38,18 +42,16 @@ namespace EduTek.Application.Services
                 var salt = new byte[SaltSize];
                 Array.Copy(hashBytes, 0, salt, 0, SaltSize);
 
-                using var pbkdf2 = new Rfc2898DeriveBytes(password, salt, Iterations, HashAlgorithmName.SHA256);
-                var key = pbkdf2.GetBytes(KeySize);
+                var key = Rfc2898DeriveBytes.Pbkdf2(
+                    password,
+                    salt,
+                    Iterations,
+                    HashAlgorithmName.SHA256,
+                    KeySize);
 
-                for (int i = 0; i < KeySize; i++)
-                {
-                    if (hashBytes[SaltSize + i] != key[i])
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
+                return CryptographicOperations.FixedTimeEquals(
+                    hashBytes.AsSpan(SaltSize, KeySize),
+                    key);
             }
             catch
             {

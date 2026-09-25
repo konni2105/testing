@@ -1,10 +1,12 @@
-﻿using EduTek.Web.Models;
+﻿using EduTek.Web.Filters;
+using EduTek.Web.Models;
 using EduTek.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace EduTek.Web.Controllers
 {
+    [SessionAuthorize]
     public class MarkController : Controller
     {
         private readonly IApiService _apiService;
@@ -55,6 +57,7 @@ namespace EduTek.Web.Controllers
 
         // GET: /Mark/Create
         [HttpGet]
+        [SessionAuthorize("Admin", "Teacher")]
         public IActionResult Create()
         {
             return View();
@@ -62,6 +65,7 @@ namespace EduTek.Web.Controllers
 
         // POST: /Mark/Create
         [HttpPost]
+        [SessionAuthorize("Admin", "Teacher")]
         public async Task<IActionResult> Create(
             CreateMarkViewModel model)
         {
@@ -79,6 +83,7 @@ namespace EduTek.Web.Controllers
 
         // GET: /Mark/Edit/1
         [HttpGet]
+        [SessionAuthorize("Admin", "Teacher")]
         public async Task<IActionResult> Edit(int id)
         {
             var response =
@@ -108,6 +113,7 @@ namespace EduTek.Web.Controllers
 
         // POST: /Mark/Edit
         [HttpPost]
+        [SessionAuthorize("Admin", "Teacher")]
         public async Task<IActionResult> Edit(
             EditMarkViewModel model)
         {
@@ -125,6 +131,7 @@ namespace EduTek.Web.Controllers
 
         // POST: /Mark/Delete/1
         [HttpPost]
+        [SessionAuthorize("Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             await _apiService.DeleteAsync(

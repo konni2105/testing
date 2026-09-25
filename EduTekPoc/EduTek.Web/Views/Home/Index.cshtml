@@ -1,8 +1,19 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="p-4 p-md-5 mb-4 bg-white rounded-3 shadow-sm">
+    <h1 class="display-5 fw-semibold">EduTek Academic Portal</h1>
+    <p class="lead mb-4">
+        Manage departments, classes, attendance, exams, marks, and feedback from one place.
+    </p>
+    @if (Context.Session.GetString("AccessToken") == null)
+    {
+        <a class="btn btn-primary me-2" asp-controller="Auth" asp-action="Login">Login</a>
+        <a class="btn btn-outline-secondary" asp-controller="Auth" asp-action="Register">Register</a>
+    }
+    else
+    {
+        <a class="btn btn-primary" asp-controller="Dashboard" asp-action="Index">Go to Dashboard</a>
+    }
 </div>

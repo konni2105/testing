@@ -1,10 +1,12 @@
-﻿using EduTek.Web.Models;
+﻿using EduTek.Web.Filters;
+using EduTek.Web.Models;
 using EduTek.Web.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace EduTek.Web.Controllers
 {
+    [SessionAuthorize]
     public class FeedbackController : Controller
     {
         private readonly IApiService _apiService;
@@ -51,6 +53,7 @@ namespace EduTek.Web.Controllers
 
         // GET: /Feedback/Create
         [HttpGet]
+        [SessionAuthorize("Admin", "Teacher")]
         public IActionResult Create()
         {
             return View();
@@ -58,6 +61,7 @@ namespace EduTek.Web.Controllers
 
         // POST: /Feedback/Create
         [HttpPost]
+        [SessionAuthorize("Admin", "Teacher")]
         public async Task<IActionResult> Create(CreateFeedbackViewModel model)
         {
             if (!ModelState.IsValid)
@@ -74,6 +78,7 @@ namespace EduTek.Web.Controllers
 
         // GET: /Feedback/Edit/1
         [HttpGet]
+        [SessionAuthorize("Admin", "Teacher")]
         public async Task<IActionResult> Edit(int id)
         {
             var response = await _apiService.GetAsync($"api/Feedback/{id}");
@@ -102,6 +107,7 @@ namespace EduTek.Web.Controllers
 
         // POST: /Feedback/Edit
         [HttpPost]
+        [SessionAuthorize("Admin", "Teacher")]
         public async Task<IActionResult> Edit(EditFeedbackViewModel model)
         {
             if (!ModelState.IsValid)
@@ -118,6 +124,7 @@ namespace EduTek.Web.Controllers
 
         // POST: /Feedback/Delete/1
         [HttpPost]
+        [SessionAuthorize("Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             await _apiService.DeleteAsync(

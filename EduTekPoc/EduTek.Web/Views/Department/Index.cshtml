@@ -11,14 +11,15 @@
 @if (role == "Admin")
 {
     <a asp-controller="Department"
-       asp-action="Create">
+       asp-action="Create"
+       class="btn btn-primary mb-3">
         Create Department
     </a>
 }
 
 @if (Model != null && Model.Count > 0)
 {
-    <table class="table table-bordered">
+    <table class="table table-bordered table-striped table-hover align-middle">
 
         <thead>
             <tr>
@@ -41,7 +42,8 @@
                     <td>
                             <a asp-controller="Department"
                                asp-action="Details"
-                               asp-route-id="@department.DepartmentId">
+                               asp-route-id="@department.DepartmentId"
+                               class="btn btn-info btn-sm">
                                 Details
                             </a>
 
@@ -51,7 +53,8 @@
 
                                 <a asp-controller="Department"
                                    asp-action="Edit"
-                                   asp-route-id="@department.DepartmentId">
+                                   asp-route-id="@department.DepartmentId"
+                                   class="btn btn-warning btn-sm">
                                     Edit
                                 </a>
 
@@ -63,9 +66,9 @@
                                       method="post"
                                       style="display:inline;">
 
-                                    <button type="submit">
-                                        Delete
-                                    </button>
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    Delete
+                                </button>
 
                                     </form>
                             }

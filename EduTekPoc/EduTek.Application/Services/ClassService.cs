@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -55,7 +55,7 @@ namespace EduTek.Application.Services
 
             if (nameExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Class name already exists.");
             }
 
@@ -95,7 +95,7 @@ namespace EduTek.Application.Services
 
             if (nameExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Class name already exists.");
             }
 
@@ -124,7 +124,7 @@ namespace EduTek.Application.Services
 
             if (hasStudents)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete class because students are assigned to it.");
             }
 
@@ -134,7 +134,7 @@ namespace EduTek.Application.Services
 
             if (hasSubjectAssignments)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete class because subject assignments exist.");
             }
 
@@ -144,7 +144,7 @@ namespace EduTek.Application.Services
 
             if (hasTeacherAssignments)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete class because teacher assignments exist.");
             }
 
@@ -153,7 +153,7 @@ namespace EduTek.Application.Services
 
             if (hasExams)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Cannot delete class because exams exist.");
             }
 

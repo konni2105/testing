@@ -1,4 +1,4 @@
-﻿using EduTek.Application.DTOs;
+using EduTek.Application.DTOs;
 using EduTek.Infrastructure.Models;
 using EduTek.Infrastructure.Repositories;
 
@@ -84,7 +84,7 @@ namespace EduTek.Application.Services
 
             if (teacher == null)
             {
-                throw new Exception("Teacher not found.");
+                throw new InvalidOperationException("Teacher not found.");
             }
 
             // 2. Check Subject exists
@@ -93,7 +93,7 @@ namespace EduTek.Application.Services
 
             if (subject == null)
             {
-                throw new Exception("Subject not found.");
+                throw new InvalidOperationException("Subject not found.");
             }
 
             // 3. Check Class exists
@@ -102,7 +102,7 @@ namespace EduTek.Application.Services
 
             if (classEntity == null)
             {
-                throw new Exception("Class not found.");
+                throw new InvalidOperationException("Class not found.");
             }
 
             // 4. Check Subject is assigned to this Class
@@ -113,7 +113,7 @@ namespace EduTek.Application.Services
 
             if (!subjectAssigned)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Subject is not assigned to this class.");
             }
 
@@ -126,11 +126,11 @@ namespace EduTek.Application.Services
 
             if (assignmentExists)
             {
-                throw new Exception(
+                throw new InvalidOperationException(
                     "Teacher is already assigned to this subject and class.");
             }
 
-            // 6. DTO → Entity mapping
+            // 6. DTO ? Entity mapping
             var assignment = new TeacherSubjectClass
             {
                 TeacherId = dto.TeacherId,
@@ -142,7 +142,7 @@ namespace EduTek.Application.Services
             var createdAssignment =
                 await _repository.AddAsync(assignment);
 
-            // 8. Entity → DTO mapping
+            // 8. Entity ? DTO mapping
             return new TeacherSubjectClassDto
             {
                 TeacherId = createdAssignment.TeacherId,

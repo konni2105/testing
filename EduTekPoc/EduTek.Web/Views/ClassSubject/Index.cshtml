@@ -1,27 +1,34 @@
-﻿@model List<EduTek.Web.Models.ClassSubjectViewModel>
+@model List<EduTek.Web.Models.ClassSubjectViewModel>
 
 @{
     ViewData["Title"] = "Class Subjects";
+    var role = Context.Session.GetString("Role");
+    var isAdmin = string.Equals(role, "Admin", StringComparison.OrdinalIgnoreCase);
 }
 
-<h1>Class Subjects</h1>
-
-<p>
-    <a asp-action="Create" class="btn btn-primary">
-        Assign Subject
-    </a>
-</p>
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Class Subjects</h1>
+    @if (isAdmin)
+    {
+        <a asp-action="Create" class="btn btn-primary">
+            Assign Subject
+        </a>
+    }
+</div>
 
 @if (Model != null && Model.Count > 0)
 {
-    <table class="table table-bordered">
+    <table class="table table-bordered table-striped table-hover align-middle">
         <thead>
             <tr>
                 <th>Class ID</th>
                 <th>Class Name</th>
                 <th>Subject ID</th>
                 <th>Subject Name</th>
-                <th>Action</th>
+                @if (isAdmin)
+                {
+                    <th>Action</th>
+                }
             </tr>
         </thead>
 
@@ -33,24 +40,28 @@
                     <td>@item.ClassName</td>
                     <td>@item.SubjectId</td>
                     <td>@item.SubjectName</td>
-                    <td>
-                        <form asp-action="Delete"
-                              method="post"
-                              style="display:inline;">
-                            <input type="hidden"
-                                   name="classId"
-                                   value="@item.ClassId" />
+                    @if (isAdmin)
+                    {
+                        <td>
+                            <form asp-action="Delete"
+                                  method="post"
+                                  style="display:inline;">
+                                <input type="hidden"
+                                       name="classId"
+                                       value="@item.ClassId" />
 
-                            <input type="hidden"
-                                   name="subjectId"
-                                   value="@item.SubjectId" />
+                                <input type="hidden"
+                                       name="subjectId"
+                                       value="@item.SubjectId" />
 
-                            <button type="submit"
-                                    class="btn btn-danger">
-                                Delete
-                            </button>
-                        </form>
-                    </td>
+                                <button type="submit"
+                                        class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Are you sure you want to remove this subject from the class?');">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    }
                 </tr>
             }
         </tbody>
@@ -58,5 +69,5 @@
 }
 else
 {
-    <p>No class-subject relationships found.</p>
+    <div class="alert alert-info">No class-subject relationships found.</div>
 }
