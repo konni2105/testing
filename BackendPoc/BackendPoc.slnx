@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Poc.Application/Poc.Application.csproj" />
+  <Project Path="Poc.Domain/Poc.Domain.csproj" />
+  <Project Path="Poc.Infrastructure/Poc.Infrastructure.csproj" />
+  <Project Path="Poc.Tests/Poc.Tests.csproj" />
+  <Project Path="Poc.WebApi/Poc.WebApi.csproj" />
+</Solution>
