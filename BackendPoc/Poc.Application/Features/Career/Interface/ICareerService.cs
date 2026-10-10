@@ -1,4 +1,5 @@
-﻿using Poc.Application.Features.Career.DTO;
+﻿using Poc.Application.Common.Pagination;
+using Poc.Application.Features.Career.DTO;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,5 +17,8 @@ namespace Poc.Application.Features.Career.Interface
         Task<CareerResponseDto?> UpdateAsync(int id, UpdateCareerDto dto);
 
         Task<bool> DeleteAsync(int id);
-    }
+         Task<PagedResponse<CareerResponseDto>> GetAllAsync(
+            int pageNumber,
+            int pageSize);
+            }
 }

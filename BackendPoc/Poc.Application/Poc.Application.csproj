@@ -11,19 +11,13 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Auth\DTOs\" />
-    <Folder Include="Features\Auth\Interfaces\" />
-    <Folder Include="Features\Auth\Services\" />
-    <Folder Include="Features\Simulations\DTOs\" />
-    <Folder Include="Features\Simulations\Interfaces\" />
-    <Folder Include="Features\Simulations\Services\" />
-    <Folder Include="Features\Simulations\Rules\" />
     <Folder Include="Features\Simulations\Validators\" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="12.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.12" />
+    <PackageReference Include="Microsoft.Extensions.Identity.Core" Version="10.0.12" />
   </ItemGroup>
 
 </Project>

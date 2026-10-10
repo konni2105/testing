@@ -3,6 +3,8 @@ using Poc.Application.Common.Interfaces;
 using Poc.Application.Features.Career.DTO;
 using Poc.Application.Features.Career.Interface;
 using CareerEntity = Poc.Domain.Entities.Career;
+using Poc.Application.Common.Pagination;
+
 
 namespace Poc.Application.Features.Career.Services
 {
@@ -110,5 +112,46 @@ namespace Poc.Application.Features.Career.Services
                 CreatedDate = career.CreatedDate
             };
         }
+
+
+
+        public async Task<PagedResponse<CareerResponseDto>> GetAllAsync(
+            int pageNumber,
+            int pageSize)
+        {
+            var query = _context.Careers
+                .AsNoTracking()
+                .OrderBy(c => c.Id);
+
+            var totalCount = await query.CountAsync();
+
+            var careers = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(c => new CareerResponseDto
+                {
+                    Id = c.Id,
+                    Title = c.Title,
+                    Description = c.Description,
+                    MinimumSalary = c.MinimumSalary,
+                    MaximumSalary = c.MaximumSalary,
+                    RequiredExperience = c.RequiredExperience,
+                    IsActive = c.IsActive,
+                    CreatedDate = c.CreatedDate
+                })
+                .ToListAsync();
+
+            return new PagedResponse<CareerResponseDto>
+            {
+                Items = careers,
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalCount = totalCount,
+                TotalPages = (int)Math.Ceiling(
+                    totalCount / (double)pageSize)
+            };
+        }
+
+
     }
 }
