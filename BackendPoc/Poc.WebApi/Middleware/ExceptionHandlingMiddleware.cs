@@ -56,8 +56,7 @@ public class ExceptionHandlingMiddleware
             problem.Extensions["traceId"] =
                 context.TraceIdentifier;
 
-            await context.Response.WriteAsync(
-                JsonSerializer.Serialize(problem));
+            await context.Response.WriteAsJsonAsync(problem);
         }
     }
 }

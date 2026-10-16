@@ -119,9 +119,12 @@ namespace Poc.Application.Features.Career.Services
             int pageNumber,
             int pageSize)
         {
+
             var query = _context.Careers
                 .AsNoTracking()
+                .Where(c => c.IsActive)
                 .OrderBy(c => c.Id);
+
 
             var totalCount = await query.CountAsync();
 

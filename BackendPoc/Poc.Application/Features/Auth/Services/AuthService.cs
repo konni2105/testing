@@ -24,7 +24,7 @@ namespace Poc.Application.Features.Auth.Services
             _jwtTokenService = jwtTokenService;
         }
 
-        public async Task<AuthResponseDto> RegisterAsync(RegisterDto dto)
+        public async Task<RegisterResponseDto> RegisterAsync(RegisterDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Username) ||
                 string.IsNullOrWhiteSpace(dto.Email)||
@@ -59,7 +59,13 @@ namespace Poc.Application.Features.Auth.Services
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return _jwtTokenService.GenerateToken(user);
+            return new RegisterResponseDto
+            {
+                Id = user.Id,
+                Username = user.Username,
+                Email = user.Email,
+                Message = "User registered successfully. Please log in."
+            };
         }
 
         public async Task<AuthResponseDto> LoginAsync(LoginDto dto)

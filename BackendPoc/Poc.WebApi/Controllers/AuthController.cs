@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Poc.Application.Common.Responses;
+﻿
+using Microsoft.AspNetCore.Mvc;
+using Poc.Application.Common.DTOs;
 using Poc.Application.Features.Auth.DTOs;
 using Poc.Application.Features.Auth.Interfaces;
 
@@ -15,14 +16,15 @@ namespace Poc.WebApi.Controllers
         {
             _authService = authService;
         }
-
+        
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto dto)
         {
             var result = await _authService.RegisterAsync(dto);
 
-            return Ok(new ApiResponse<AuthResponseDto>(
-                true, "User registered successfully.", result));
+            return Ok(ApiResponseDto<RegisterResponseDto>.CreateSuccess(
+                "User registered successfully. Please log in.",
+                result));
         }
 
         [HttpPost("login")]
@@ -30,8 +32,9 @@ namespace Poc.WebApi.Controllers
         {
             var result = await _authService.LoginAsync(dto);
 
-            return Ok(new ApiResponse<AuthResponseDto>(
-                true, "Login successful.", result));
+            return Ok(ApiResponseDto<AuthResponseDto>.CreateSuccess(
+                "Login successful.",
+                result));
         }
     }
 }

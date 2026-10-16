@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Poc.Application.Common.DTOs;
 using Poc.Application.Features.Simulations.DTOs;
 using Poc.Application.Features.Simulations.Interfaces;
-
+using System.Security.Claims;
 namespace Poc.WebApi.Controllers;
 
 [ApiController]
@@ -24,8 +24,17 @@ public class SimulationsController : ControllerBase
         [FromBody] CreateSimulationDto request,
         CancellationToken cancellationToken)
     {
+        var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+
+        if (userIdClaim is null ||
+            !int.TryParse(userIdClaim.Value, out var userId))
+        {
+            return Unauthorized();
+        }
+
         var result = await _simulationService.CreateSimulationAsync(
             request,
+            userId,
             cancellationToken);
 
         var response = ApiResponseDto<SimulationResponseDto>

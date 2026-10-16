@@ -22,6 +22,13 @@ using System.Text;
 
 
 var builder = WebApplication.CreateBuilder(args);
+var secretKey = builder.Configuration["JwtSettings:SecretKey"];
+
+Console.WriteLine(
+    $"JWT secret loaded: {!string.IsNullOrWhiteSpace(secretKey)}");
+
+Console.WriteLine(
+    $"JWT secret byte length: {System.Text.Encoding.UTF8.GetByteCount(secretKey ?? string.Empty)}");
 
 builder.Host.UseSerilog((context, services, configuration) =>
 {
@@ -35,11 +42,10 @@ builder.Host.UseSerilog((context, services, configuration) =>
 });
 
 
-
-
 var jwtSettings = builder.Configuration
     .GetSection("JwtSettings")
     .Get<JwtSettings>()
+
     ?? throw new InvalidOperationException(
         "JwtSettings configuration is missing.");
 
@@ -49,7 +55,6 @@ if (string.IsNullOrWhiteSpace(jwtSettings.SecretKey) ||
     throw new InvalidOperationException(
         "JWT SecretKey must contain at least 32 bytes.");
 }
-
 // Add services to the container
 builder.Services.AddControllers();
 
@@ -129,6 +134,11 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 
+
+builder.Services .AddHealthChecks()
+    .AddDbContextCheck<AppDbContext>();
+
+//health checks
 var app = builder.Build();
 
 app.UseSerilogRequestLogging();
@@ -152,5 +162,17 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHealthChecks("/health");
+
+// to check temporary globalexceptionhandling 
+
+//if (app.Environment.IsDevelopment())
+//{
+//    app.MapGet("/test-exception", () =>
+//    {
+//        throw new InvalidOperationException(
+//            "Test exception for middleware verification.");
+//    });
+//}
 
 app.Run();

@@ -1,4 +1,5 @@
 <Solution>
+  <Project Path="GenrateJwtSecret/GenrateJwtSecret.csproj" Id="6b5804a7-9967-4d30-84af-3ea8ae3d1845" />
   <Project Path="Poc.Application/Poc.Application.csproj" />
   <Project Path="Poc.Domain/Poc.Domain.csproj" />
   <Project Path="Poc.Infrastructure/Poc.Infrastructure.csproj" />
